@@ -295,14 +295,11 @@ function HeroSection() {
             color: '#4b5563',
           }}
         >
-          <span className="text-gradient" style={{ fontWeight: 700 }}>
-            技術
-          </span>
-          で照らし、
+          細部に
           <span className="text-gradient" style={{ fontWeight: 700 }}>
             魂
           </span>
-          を実装する。
+          は宿る。
         </h2>
         <div
           style={{
@@ -473,12 +470,11 @@ function ProductSection() {
                 lineHeight: 1.8,
               }}
             >
-              顧客管理、自動応答、セグメント配信をこれひとつで。
-              まるで専属のメイドのように、あなたのビジネスの顧客対応をスマートに自動化します。
-              高いリピート率を実現するための、次世代LINEマーケティングツールです。
+              顧客管理、自動応答、物販、スタッフの勤怠管理などさまざまな機能をこれひとつで。
+              一度来院した患者様がまた来たくなる仕組みを、LINE公式アカウントで実現します。
             </p>
             <ul style={{ listStyle: 'none', marginBottom: '2rem' }}>
-              {['直感的なシナリオ配信', '顧客属性の自動タグ付け', '24時間365日の自動対応'].map(
+              {['リッチメニュー管理', '予約リマインド配信', '24時間365日の自動対応', '物販管理'].map(
                 (item) => (
                   <li
                     key={item}
@@ -684,8 +680,8 @@ function ServicesSection() {
 function CompanySection() {
   const companyInfo = [
     { label: '会社名', value: '株式会社soular' },
-    { label: '設立', value: '202X年 X月' },
-    { label: '代表者', value: '代表取締役 [あなたのお名前]' },
+    { label: '設立', value: '2025年 X月' },
+    { label: '代表者', value: '代表取締役 浜田颯流' },
     {
       label: '事業内容',
       value: (
