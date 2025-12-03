@@ -411,24 +411,18 @@ function ProductSection() {
                   opacity: 0.3,
                 }}
               />
-              <div
+              <img
+                src="/linemade.png"
+                alt="ラインメイドリピちゃん"
                 style={{
                   position: 'relative',
                   borderRadius: '1rem',
-                  aspectRatio: '16/9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'white',
+                  width: '100%',
+                  height: 'auto',
                   border: '1px solid #e5e7eb',
                   boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
                 }}
-              >
-                <div style={{ textAlign: 'center', color: '#9ca3af' }}>
-                  <MessageCircle size={64} style={{ color: '#22c55e', marginBottom: '1rem' }} />
-                  <p>Service Interface Image</p>
-                </div>
-              </div>
+              />
             </div>
           </motion.div>
 
