@@ -228,7 +228,7 @@ function HeroSection() {
           scale: 1.0,
           scaleMobile: 1.0,
           color: 0xf97316,
-          backgroundColor: 0xfffbf5,
+          backgroundColor: 0xffffff,
           points: 12.0,
           maxDistance: 20.0,
           spacing: 18.0,
