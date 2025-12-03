@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>株式会社soular | Digital Soul Solution</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* カスタムフォントと背景設定 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0f172a;
+            /* 深いネイビーブラック */
+            color: #f8fafc;
+        }
+
+        /* ヒーローセクションの背景動画/画像オーバーレイ用 */
+        .hero-bg {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            /* パララックス効果 */
+        }
+
+        /* グラスモーフィズムカード */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+    <!-- ヘッダー（日本語ナビ） -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass-card bg-opacity-90 border-b-0 border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold tracking-wider text-white">
+                        soular<span class="text-blue-400">.</span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#product"
+                            class="hover:text-blue-400 transition px-3 py-2 rounded-md text-sm font-medium">サービス</a>
+                        <a href="#services"
+                            class="hover:text-blue-400 transition px-3 py-2 rounded-md text-sm font-medium">提供内容</a>
+                        <a href="#company"
+                            class="hover:text-blue-400 transition px-3 py-2 rounded-md text-sm font-medium">会社情報</a>
+                        <a href="#contact"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium transition shadow-lg shadow-blue-500/30">お問い合わせ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center hero-bg">
+        <div class="text-center px-4 max-w-4xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
+            <p class="text-blue-400 font-bold tracking-[0.2em] mb-4 text-sm md:text-base uppercase">Digital Innovation
+            </p>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                株式会社<span class="text-white">soular</span>
+            </h1>
+            <h2 class="text-2xl md:text-4xl font-light mb-8 text-gray-200">
+                <span class="text-gradient font-bold">技術</span>で照らし、<span class="text-gradient font-bold">魂</span>を実装する。
+            </h2>
+            <div class="flex justify-center gap-4 mt-8">
+                <a href="#contact"
+                    class="px-8 py-4 bg-white text-gray-900 rounded-full font-bold hover:bg-gray-200 transition transform hover:-translate-y-1 shadow-lg">
+                    お問い合わせ
+                </a>
+                <a href="#product"
+                    class="px-8 py-4 glass-card text-white rounded-full font-bold hover:bg-white/10 transition border border-white/20">
+                    事業内容を見る
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 w-full text-center animate-bounce">
+            <i class="fa-solid fa-chevron-down text-white/50 text-2xl"></i>
+        </div>
+    </header>
+
+    <section id="product" class="py-24 bg-slate-900 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-blue-600/10 blur-[100px] rounded-full"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Product</h2>
+                <div class="w-20 h-1 bg-blue-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 bg-gradient-to-r from-green-400 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
+                        </div>
+                        <div
+                            class="relative glass-card rounded-2xl p-1 overflow-hidden aspect-video flex items-center justify-center bg-gray-800">
+                            <div class="text-center text-gray-400">
+                                <i class="fa-brands fa-line text-6xl text-green-500 mb-4"></i>
+                                <p>Service Interface Image</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <span class="text-green-400 font-bold tracking-wider text-sm uppercase">Official LINE
+                        Management</span>
+                    <h3 class="text-3xl font-bold mt-2 mb-6">公式ライン管理サービス<br>「ラインメイドリピちゃん」</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        顧客管理、自動応答、セグメント配信をこれひとつで。
+                        まるで専属のメイドのように、あなたのビジネスの顧客対応をスマートに自動化します。
+                        高いリピート率を実現するための、次世代LINEマーケティングツールです。
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-500 mr-3"></i> 直感的なシナリオ配信
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-500 mr-3"></i> 顧客属性の自動タグ付け
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-500 mr-3"></i> 24時間365日の自動対応
+                        </li>
+                    </ul>
+                    <button
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition shadow-lg shadow-green-500/20">
+                        詳細を見る <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-24 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3次 md:text-4xl font-bold mb-4">Services</h2>
+                <p class="text-gray-400">テクノロジーの力でビジネスを加速させる、包括的なソリューション。</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/10 transition duration-300 group"
+                    data-aos="fade-up" data-aos-delay="0">
+                    <div
+                        class="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-code text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">System Development</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Webアプリケーションから業務システムまで、スケーラブルで堅牢なシステムを構築します。モダンな技術選定で、将来性のある開発を行います。
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg白/10 transition duration-300 group" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <div
+                        class="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-lightbulb text-2xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">DX Consulting</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        単なるデジタル化ではなく、ビジネスモデルの変革を支援。現状の課題を分析し、最適なデジタルソリューションを提案・導入します。
+                    </p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/10 transition duration-300 group"
+                    data-aos="fade-up" data-aos-delay="200">
+                    <div
+                        class="w-14 h-14 bg-pink-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-line text-2xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Marketing Support</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        LINEを活用したCRM施策を中心に、Web広告運用からSNS戦略まで、売上向上に直結するマーケティング施策を実行支援します。
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-16 text-center" data-aos="fade-up">
+                <p class="text-sm text-gray-500 uppercase tracking-widest mb-4">Achievements</p>
+                <div class="glass-card inline-block px-8 py-4 rounded-full text-gray-300">
+                    <i class="fa-solid fa-clock-rotate-left mr-2"></i> 導入事例・実績は随時更新予定
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="company" class="py-24 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Company</h2>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden" data-aos="fade-up">
+                <table class="w-full text-left text-gray-300">
+                    <tbody class="divide-y divide-gray-700">
+                        <tr class="hover:bg-white/5 transition">
+                            <th class="py-4 px-6 font-medium w-1/3 bg-slate-800/50">会社名</th>
+                            <td class="py-4 px-6">株式会社soular</td>
+                        </tr>
+                        <tr class="hover:bg白/5 transition">
+                            <th class="py-4 px-6 font-medium bg-slate-800/50">設立</th>
+                            <td class="py-4 px-6">202X年 X月</td>
+                        </tr>
+                        <tr class="hover:bg白/5 transition">
+                            <th class="py-4 px-6 font-medium bg-slate-800/50">代表者</th>
+                            <td class="py-4 px-6">代表取締役 [あなたのお名前]</td>
+                        </tr>
+                        <tr class="hover:bg白/5 transition">
+                            <th class="py-4 px-6 font-medium bg-slate-800/50">事業内容</th>
+                            <td class="py-4 px-6">
+                                LINE公式アカウント運用ツールの開発・販売<br>
+                                Webシステム開発・DX支援<br>
+                                デジタルマーケティング支援
+                            </td>
+                        </tr>
+                        <tr class="hover:bg白/5 transition">
+                            <th class="py-4 px-6 font-medium bg-slate-800/50">所在地</th>
+                            <td class="py-4 px-6">〒000-0000 東京都...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-slate-950 relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Contact</h2>
+                <p class="text-gray-400">お仕事のご依頼、ご相談などお気軽にお問い合わせください。</p>
+            </div>
+
+            <form class="glass-card p-8 md:p-12 rounded-2xl space-y-6" data-aos="fade-up">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">お名前</label>
+                        <input type="text"
+                            class="w-full bg-slate-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                            placeholder="山田 太郎">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">メールアドレス</label>
+                        <input type="email"
+                            class="w-full bg-slate-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                            placeholder="example@soular.co.jp">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">件名</label>
+                    <input type="text"
+                        class="w-full bg-slate-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        placeholder="サービス導入について">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">お問い合わせ内容</label>
+                    <textarea rows="5"
+                        class="w-full bg-slate-900/50 border border-gray-700 rounded-lg px-4 py-3 text白 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        placeholder="お問い合わせ内容をご記入ください"></textarea>
+                </div>
+                <div class="text-center pt-4">
+                    <button type="submit"
+                        class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text白 font-bold py-4 px-12 rounded-full transition transform hover:scale-105 shadow-lg shadow-purple-500/30 w-full md:w-auto">
+                        送信する
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-slate-900 py-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="text-xl font-bold text-white">soular<span class="text-blue-400">.</span></span>
+            </div>
+            <div class="text-gray-500 text-sm">
+                &copy; 2024 soular Inc. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Animate On Scroll
+        AOS.init({
+            once: true,
+            offset: 100,
+            duration: 800,
+            easing: 'ease-out-cubic',
+        });
+    </script>
+</body>
+
+</html>
