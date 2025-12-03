@@ -11,7 +11,9 @@ import {
   Menu,
   X,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import * as THREE from 'three'
+import NET from 'vanta/dist/vanta.net.min'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -55,9 +57,9 @@ function Navigation() {
         left: 0,
         right: 0,
         zIndex: 50,
-        background: 'rgba(15, 23, 42, 0.9)',
+        background: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
       }}
     >
       <div
@@ -80,12 +82,12 @@ function Navigation() {
             style={{
               fontSize: '1.5rem',
               fontWeight: 700,
-              color: 'white',
+              color: '#111827',
               textDecoration: 'none',
               letterSpacing: '0.05em',
             }}
           >
-            soular<span style={{ color: '#60a5fa' }}>.</span>
+            soular<span style={{ color: '#f97316' }}>.</span>
           </a>
 
           {/* Desktop Nav */}
@@ -102,14 +104,14 @@ function Navigation() {
                 key={link.href}
                 href={link.href}
                 style={{
-                  color: '#cbd5e1',
+                  color: '#4b5563',
                   textDecoration: 'none',
                   fontSize: '0.875rem',
                   fontWeight: 500,
                   transition: 'color 0.2s',
                 }}
-                onMouseOver={(e) => (e.target.style.color = '#60a5fa')}
-                onMouseOut={(e) => (e.target.style.color = '#cbd5e1')}
+                onMouseOver={(e) => (e.target.style.color = '#f97316')}
+                onMouseOut={(e) => (e.target.style.color = '#4b5563')}
               >
                 {link.label}
               </a>
@@ -117,17 +119,18 @@ function Navigation() {
             <a
               href="#contact"
               style={{
-                background: '#2563eb',
+                background: 'linear-gradient(to right, #ea580c, #f97316)',
                 color: 'white',
                 padding: '0.5rem 1.25rem',
                 borderRadius: '9999px',
                 fontSize: '0.875rem',
                 fontWeight: 500,
                 textDecoration: 'none',
-                transition: 'background 0.2s',
+                transition: 'opacity 0.2s',
+                boxShadow: '0 4px 12px rgba(234, 88, 12, 0.3)',
               }}
-              onMouseOver={(e) => (e.target.style.background = '#1d4ed8')}
-              onMouseOut={(e) => (e.target.style.background = '#2563eb')}
+              onMouseOver={(e) => (e.target.style.opacity = '0.9')}
+              onMouseOut={(e) => (e.target.style.opacity = '1')}
             >
               お問い合わせ
             </a>
@@ -140,7 +143,7 @@ function Navigation() {
               display: 'block',
               background: 'none',
               border: 'none',
-              color: 'white',
+              color: '#111827',
               cursor: 'pointer',
               padding: '0.5rem',
             }}
@@ -155,7 +158,7 @@ function Navigation() {
           <div
             style={{
               padding: '1rem 0',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              borderTop: '1px solid rgba(0, 0, 0, 0.08)',
             }}
             className="md-hidden"
           >
@@ -167,7 +170,7 @@ function Navigation() {
                 style={{
                   display: 'block',
                   padding: '0.75rem 0',
-                  color: '#cbd5e1',
+                  color: '#4b5563',
                   textDecoration: 'none',
                   fontSize: '0.875rem',
                 }}
@@ -181,7 +184,7 @@ function Navigation() {
               style={{
                 display: 'block',
                 marginTop: '0.75rem',
-                background: '#2563eb',
+                background: 'linear-gradient(to right, #ea580c, #f97316)',
                 color: 'white',
                 padding: '0.75rem 1.25rem',
                 borderRadius: '9999px',
@@ -208,9 +211,38 @@ function Navigation() {
 }
 
 function HeroSection() {
+  const vantaRef = useRef(null)
+  const [vantaEffect, setVantaEffect] = useState(null)
+
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        NET({
+          el: vantaRef.current,
+          THREE: THREE,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          color: 0xf97316,
+          backgroundColor: 0xfffbf5,
+          points: 12.0,
+          maxDistance: 20.0,
+          spacing: 18.0,
+        })
+      )
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy()
+    }
+  }, [vantaEffect])
+
   return (
     <header
-      className="hero-bg"
+      ref={vantaRef}
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -228,11 +260,13 @@ function HeroSection() {
           padding: '0 1.5rem',
           maxWidth: '56rem',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
         <p
           style={{
-            color: '#60a5fa',
+            color: '#ea580c',
             fontWeight: 700,
             letterSpacing: '0.2em',
             marginBottom: '1rem',
@@ -248,7 +282,7 @@ function HeroSection() {
             fontWeight: 700,
             marginBottom: '1.5rem',
             lineHeight: 1.1,
-            color: 'white',
+            color: '#111827',
           }}
         >
           株式会社soular
@@ -258,7 +292,7 @@ function HeroSection() {
             fontSize: 'clamp(1.25rem, 4vw, 2.25rem)',
             fontWeight: 300,
             marginBottom: '2.5rem',
-            color: '#e2e8f0',
+            color: '#4b5563',
           }}
         >
           <span className="text-gradient" style={{ fontWeight: 700 }}>
@@ -297,12 +331,13 @@ function HeroSection() {
           left: 0,
           right: 0,
           textAlign: 'center',
+          zIndex: 10,
         }}
       >
         <ChevronDown
           size={32}
           style={{
-            color: 'rgba(255, 255, 255, 0.4)',
+            color: '#9ca3af',
             animation: 'bounce 2s infinite',
           }}
         />
@@ -324,7 +359,7 @@ function ProductSection() {
       id="product"
       style={{
         padding: '6rem 0',
-        background: '#0f172a',
+        background: '#fffbf5',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -333,12 +368,11 @@ function ProductSection() {
       <div
         style={{
           position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '40%',
-          height: '100%',
-          background: 'rgba(37, 99, 235, 0.1)',
-          filter: 'blur(100px)',
+          top: '-50%',
+          right: '-10%',
+          width: '50%',
+          height: '200%',
+          background: 'radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%)',
           borderRadius: '50%',
         }}
       />
@@ -374,14 +408,13 @@ function ProductSection() {
                 style={{
                   position: 'absolute',
                   inset: '-4px',
-                  background: 'linear-gradient(to right, #4ade80, #3b82f6)',
+                  background: 'linear-gradient(to right, #22c55e, #f97316)',
                   borderRadius: '1rem',
-                  filter: 'blur(8px)',
+                  filter: 'blur(12px)',
                   opacity: 0.3,
                 }}
               />
               <div
-                className="glass-card"
                 style={{
                   position: 'relative',
                   borderRadius: '1rem',
@@ -389,10 +422,12 @@ function ProductSection() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: '#1e293b',
+                  background: 'white',
+                  border: '1px solid #e5e7eb',
+                  boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
                 }}
               >
-                <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                <div style={{ textAlign: 'center', color: '#9ca3af' }}>
                   <MessageCircle size={64} style={{ color: '#22c55e', marginBottom: '1rem' }} />
                   <p>Service Interface Image</p>
                 </div>
@@ -408,7 +443,7 @@ function ProductSection() {
           >
             <span
               style={{
-                color: '#4ade80',
+                color: '#22c55e',
                 fontWeight: 700,
                 letterSpacing: '0.1em',
                 fontSize: '0.75rem',
@@ -423,7 +458,7 @@ function ProductSection() {
                 fontWeight: 700,
                 marginTop: '0.5rem',
                 marginBottom: '1.5rem',
-                color: 'white',
+                color: '#111827',
                 lineHeight: 1.3,
               }}
             >
@@ -433,7 +468,7 @@ function ProductSection() {
             </h3>
             <p
               style={{
-                color: '#94a3b8',
+                color: '#6b7280',
                 marginBottom: '1.5rem',
                 lineHeight: 1.8,
               }}
@@ -450,7 +485,7 @@ function ProductSection() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      color: '#cbd5e1',
+                      color: '#374151',
                       marginBottom: '0.75rem',
                     }}
                   >
@@ -467,7 +502,7 @@ function ProductSection() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                background: '#16a34a',
+                background: '#22c55e',
                 color: 'white',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
@@ -475,9 +510,10 @@ function ProductSection() {
                 fontWeight: 700,
                 cursor: 'pointer',
                 transition: 'background 0.2s',
+                boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)',
               }}
-              onMouseOver={(e) => (e.target.style.background = '#15803d')}
-              onMouseOut={(e) => (e.target.style.background = '#16a34a')}
+              onMouseOver={(e) => (e.target.style.background = '#16a34a')}
+              onMouseOut={(e) => (e.target.style.background = '#22c55e')}
             >
               詳細を見る
               <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
@@ -493,24 +529,24 @@ function ServicesSection() {
   const services = [
     {
       icon: Code,
-      bgColor: 'rgba(59, 130, 246, 0.2)',
-      iconColor: '#60a5fa',
+      bgColor: 'rgba(249, 115, 22, 0.1)',
+      iconColor: '#f97316',
       title: 'System Development',
       description:
         'Webアプリケーションから業務システムまで、スケーラブルで堅牢なシステムを構築します。モダンな技術選定で、将来性のある開発を行います。',
     },
     {
       icon: Lightbulb,
-      bgColor: 'rgba(168, 85, 247, 0.2)',
-      iconColor: '#c084fc',
+      bgColor: 'rgba(251, 146, 60, 0.1)',
+      iconColor: '#fb923c',
       title: 'DX Consulting',
       description:
         '単なるデジタル化ではなく、ビジネスモデルの変革を支援。現状の課題を分析し、最適なデジタルソリューションを提案・導入します。',
     },
     {
       icon: TrendingUp,
-      bgColor: 'rgba(236, 72, 153, 0.2)',
-      iconColor: '#f472b6',
+      bgColor: 'rgba(234, 88, 12, 0.1)',
+      iconColor: '#ea580c',
       title: 'Marketing Support',
       description:
         'LINEを活用したCRM施策を中心に、Web広告運用からSNS戦略まで、売上向上に直結するマーケティング施策を実行支援します。',
@@ -522,7 +558,7 @@ function ServicesSection() {
       id="services"
       style={{
         padding: '6rem 0',
-        background: '#020617',
+        background: '#ffffff',
       }}
     >
       <div className="section-container">
@@ -534,7 +570,7 @@ function ServicesSection() {
           style={{ textAlign: 'center', marginBottom: '4rem' }}
         >
           <h2 className="section-title">Services</h2>
-          <p style={{ color: '#94a3b8', marginTop: '1rem' }}>
+          <p style={{ color: '#6b7280', marginTop: '1rem' }}>
             テクノロジーの力でビジネスを加速させる、包括的なソリューション。
           </p>
         </motion.div>
@@ -556,16 +592,17 @@ function ServicesSection() {
               <motion.div
                 key={index}
                 variants={fadeUp}
-                className="glass-card"
                 style={{
                   padding: '2rem',
                   borderRadius: '1rem',
-                  transition: 'background 0.3s, transform 0.3s',
+                  background: 'white',
+                  border: '1px solid #e5e7eb',
+                  transition: 'all 0.3s ease',
                   cursor: 'default',
                 }}
                 whileHover={{
-                  background: 'rgba(255, 255, 255, 0.08)',
                   y: -5,
+                  boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
@@ -587,14 +624,14 @@ function ServicesSection() {
                     fontSize: '1.25rem',
                     fontWeight: 700,
                     marginBottom: '0.75rem',
-                    color: 'white',
+                    color: '#111827',
                   }}
                 >
                   {service.title}
                 </h3>
                 <p
                   style={{
-                    color: '#94a3b8',
+                    color: '#6b7280',
                     fontSize: '0.875rem',
                     lineHeight: 1.7,
                   }}
@@ -616,7 +653,7 @@ function ServicesSection() {
           <p
             style={{
               fontSize: '0.75rem',
-              color: '#64748b',
+              color: '#9ca3af',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
               marginBottom: '1rem',
@@ -625,13 +662,14 @@ function ServicesSection() {
             Achievements
           </p>
           <div
-            className="glass-card"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               padding: '1rem 2rem',
               borderRadius: '9999px',
-              color: '#cbd5e1',
+              color: '#6b7280',
+              background: '#fff7ed',
+              border: '1px solid #fed7aa',
             }}
           >
             <Clock size={16} style={{ marginRight: '0.5rem' }} />
@@ -668,8 +706,7 @@ function CompanySection() {
       id="company"
       style={{
         padding: '6rem 0',
-        background: '#0f172a',
-        borderTop: '1px solid #1e293b',
+        background: '#fffbf5',
       }}
     >
       <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
@@ -688,10 +725,12 @@ function CompanySection() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={fadeUp}
-          className="glass-card"
           style={{
             borderRadius: '1rem',
             overflow: 'hidden',
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            boxShadow: '0 4px 20px -5px rgba(0, 0, 0, 0.08)',
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -701,13 +740,13 @@ function CompanySection() {
                   key={index}
                   style={{
                     borderBottom:
-                      index < companyInfo.length - 1 ? '1px solid #334155' : 'none',
+                      index < companyInfo.length - 1 ? '1px solid #e5e7eb' : 'none',
                     transition: 'background 0.2s',
                   }}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)')
+                    (e.currentTarget.style.background = '#fffbf5')
                   }
-                  onMouseOut={(e) => (e.currentTarget.style.background = 'transparent')}
+                  onMouseOut={(e) => (e.currentTarget.style.background = 'white')}
                 >
                   <th
                     style={{
@@ -715,8 +754,8 @@ function CompanySection() {
                       fontWeight: 500,
                       textAlign: 'left',
                       width: '30%',
-                      background: 'rgba(30, 41, 59, 0.5)',
-                      color: '#cbd5e1',
+                      background: '#fff7ed',
+                      color: '#374151',
                       verticalAlign: 'top',
                     }}
                   >
@@ -725,7 +764,7 @@ function CompanySection() {
                   <td
                     style={{
                       padding: '1rem 1.5rem',
-                      color: '#e2e8f0',
+                      color: '#1f2937',
                     }}
                   >
                     {item.value}
@@ -746,7 +785,7 @@ function ContactSection() {
       id="contact"
       style={{
         padding: '6rem 0',
-        background: '#020617',
+        background: '#ffffff',
       }}
     >
       <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 1.5rem' }}>
@@ -758,7 +797,7 @@ function ContactSection() {
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
           <h2 className="section-title">Contact</h2>
-          <p style={{ color: '#94a3b8', marginTop: '1rem' }}>
+          <p style={{ color: '#6b7280', marginTop: '1rem' }}>
             お仕事のご依頼、ご相談などお気軽にお問い合わせください。
           </p>
         </motion.div>
@@ -768,10 +807,11 @@ function ContactSection() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={fadeUp}
-          className="glass-card"
           style={{
             padding: '2.5rem',
             borderRadius: '1rem',
+            background: '#fffbf5',
+            border: '1px solid #fed7aa',
           }}
         >
           <div
@@ -788,7 +828,7 @@ function ContactSection() {
                   display: 'block',
                   fontSize: '0.875rem',
                   fontWeight: 500,
-                  color: '#94a3b8',
+                  color: '#374151',
                   marginBottom: '0.5rem',
                 }}
               >
@@ -800,20 +840,20 @@ function ContactSection() {
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  border: '1px solid #334155',
+                  background: 'white',
+                  border: '1px solid #d1d5db',
                   borderRadius: '0.5rem',
-                  color: 'white',
+                  color: '#1f2937',
                   fontSize: '1rem',
                   outline: 'none',
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.2)'
+                  e.target.style.borderColor = '#f97316'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#334155'
+                  e.target.style.borderColor = '#d1d5db'
                   e.target.style.boxShadow = 'none'
                 }}
               />
@@ -824,7 +864,7 @@ function ContactSection() {
                   display: 'block',
                   fontSize: '0.875rem',
                   fontWeight: 500,
-                  color: '#94a3b8',
+                  color: '#374151',
                   marginBottom: '0.5rem',
                 }}
               >
@@ -836,20 +876,20 @@ function ContactSection() {
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  border: '1px solid #334155',
+                  background: 'white',
+                  border: '1px solid #d1d5db',
                   borderRadius: '0.5rem',
-                  color: 'white',
+                  color: '#1f2937',
                   fontSize: '1rem',
                   outline: 'none',
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.2)'
+                  e.target.style.borderColor = '#f97316'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#334155'
+                  e.target.style.borderColor = '#d1d5db'
                   e.target.style.boxShadow = 'none'
                 }}
               />
@@ -862,7 +902,7 @@ function ContactSection() {
                 display: 'block',
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                color: '#94a3b8',
+                color: '#374151',
                 marginBottom: '0.5rem',
               }}
             >
@@ -874,20 +914,20 @@ function ContactSection() {
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem',
-                background: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid #334155',
+                background: 'white',
+                border: '1px solid #d1d5db',
                 borderRadius: '0.5rem',
-                color: 'white',
+                color: '#1f2937',
                 fontSize: '1rem',
                 outline: 'none',
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6'
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.2)'
+                e.target.style.borderColor = '#f97316'
+                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = '#334155'
+                e.target.style.borderColor = '#d1d5db'
                 e.target.style.boxShadow = 'none'
               }}
             />
@@ -899,7 +939,7 @@ function ContactSection() {
                 display: 'block',
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                color: '#94a3b8',
+                color: '#374151',
                 marginBottom: '0.5rem',
               }}
             >
@@ -911,10 +951,10 @@ function ContactSection() {
               style={{
                 width: '100%',
                 padding: '0.75rem 1rem',
-                background: 'rgba(15, 23, 42, 0.5)',
-                border: '1px solid #334155',
+                background: 'white',
+                border: '1px solid #d1d5db',
                 borderRadius: '0.5rem',
-                color: 'white',
+                color: '#1f2937',
                 fontSize: '1rem',
                 outline: 'none',
                 resize: 'vertical',
@@ -922,11 +962,11 @@ function ContactSection() {
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6'
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.2)'
+                e.target.style.borderColor = '#f97316'
+                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = '#334155'
+                e.target.style.borderColor = '#d1d5db'
                 e.target.style.boxShadow = 'none'
               }}
             />
@@ -936,7 +976,7 @@ function ContactSection() {
             <button
               type="submit"
               style={{
-                background: 'linear-gradient(to right, #2563eb, #7c3aed)',
+                background: 'linear-gradient(to right, #ea580c, #f97316)',
                 color: 'white',
                 fontWeight: 700,
                 padding: '1rem 3rem',
@@ -945,7 +985,7 @@ function ContactSection() {
                 cursor: 'pointer',
                 fontSize: '1rem',
                 transition: 'transform 0.2s, box-shadow 0.2s',
-                boxShadow: '0 10px 25px -5px rgba(124, 58, 237, 0.3)',
+                boxShadow: '0 10px 25px -5px rgba(234, 88, 12, 0.3)',
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = 'scale(1.05)'
@@ -967,9 +1007,9 @@ function Footer() {
   return (
     <footer
       style={{
-        background: '#0f172a',
+        background: '#fffbf5',
         padding: '2rem 0',
-        borderTop: '1px solid #1e293b',
+        borderTop: '1px solid #fed7aa',
       }}
     >
       <div
@@ -985,12 +1025,12 @@ function Footer() {
           style={{
             fontSize: '1.25rem',
             fontWeight: 700,
-            color: 'white',
+            color: '#111827',
           }}
         >
-          soular<span style={{ color: '#60a5fa' }}>.</span>
+          soular<span style={{ color: '#f97316' }}>.</span>
         </span>
-        <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
+        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
           &copy; 2024 soular Inc. All rights reserved.
         </p>
       </div>
