@@ -87,7 +87,7 @@ function Navigation() {
               letterSpacing: '0.05em',
             }}
           >
-            soular<span style={{ color: '#f97316' }}>.</span>
+            soular<span style={{ color: '#6366f1' }}>.</span>
           </a>
 
           {/* Desktop Nav */}
@@ -110,7 +110,7 @@ function Navigation() {
                   fontWeight: 500,
                   transition: 'color 0.2s',
                 }}
-                onMouseOver={(e) => (e.target.style.color = '#f97316')}
+                onMouseOver={(e) => (e.target.style.color = '#6366f1')}
                 onMouseOut={(e) => (e.target.style.color = '#4b5563')}
               >
                 {link.label}
@@ -119,7 +119,7 @@ function Navigation() {
             <a
               href="#contact"
               style={{
-                background: 'linear-gradient(to right, #ea580c, #f97316)',
+                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
                 color: 'white',
                 padding: '0.5rem 1.25rem',
                 borderRadius: '9999px',
@@ -127,7 +127,7 @@ function Navigation() {
                 fontWeight: 500,
                 textDecoration: 'none',
                 transition: 'opacity 0.2s',
-                boxShadow: '0 4px 12px rgba(234, 88, 12, 0.3)',
+                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
               }}
               onMouseOver={(e) => (e.target.style.opacity = '0.9')}
               onMouseOut={(e) => (e.target.style.opacity = '1')}
@@ -184,7 +184,7 @@ function Navigation() {
               style={{
                 display: 'block',
                 marginTop: '0.75rem',
-                background: 'linear-gradient(to right, #ea580c, #f97316)',
+                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
                 color: 'white',
                 padding: '0.75rem 1.25rem',
                 borderRadius: '9999px',
@@ -227,7 +227,7 @@ function HeroSection() {
           minWidth: 200.0,
           scale: 1.0,
           scaleMobile: 1.0,
-          color: 0xf97316,
+          color: 0x6366f1,
           backgroundColor: 0xffffff,
           points: 12.0,
           maxDistance: 20.0,
@@ -266,7 +266,7 @@ function HeroSection() {
       >
         <p
           style={{
-            color: '#ea580c',
+            color: '#4f46e5',
             fontWeight: 700,
             letterSpacing: '0.2em',
             marginBottom: '1rem',
@@ -296,7 +296,7 @@ function HeroSection() {
           }}
         >
           細部に
-          <span className="text-gradient" style={{ fontWeight: 700 }}>
+          <span className="text-gradient-blue" style={{ fontWeight: 700 }}>
             魂
           </span>
           は宿る。
@@ -309,10 +309,10 @@ function HeroSection() {
             gap: '1rem',
           }}
         >
-          <a href="#contact" className="btn-primary">
+          <a href="#contact" className="btn-primary-blue">
             お問い合わせ
           </a>
-          <a href="#product" className="btn-secondary">
+          <a href="#product" className="btn-secondary-blue">
             事業内容を見る
           </a>
         </div>
@@ -345,6 +345,43 @@ function HeroSection() {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(10px); }
         }
+        .text-gradient-blue {
+          background: linear-gradient(to right, #4f46e5, #818cf8);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .btn-primary-blue {
+          display: inline-flex;
+          align-items: center;
+          background: linear-gradient(to right, #4f46e5, #6366f1);
+          color: white;
+          padding: 0.875rem 2rem;
+          border-radius: 9999px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: transform 0.2s, box-shadow 0.2s;
+          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary-blue:hover {
+          transform: scale(1.05);
+        }
+        .btn-secondary-blue {
+          display: inline-flex;
+          align-items: center;
+          background: white;
+          color: #374151;
+          padding: 0.875rem 2rem;
+          border-radius: 9999px;
+          font-weight: 600;
+          text-decoration: none;
+          border: 1px solid #d1d5db;
+          transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary-blue:hover {
+          border-color: #6366f1;
+          color: #6366f1;
+        }
       `}</style>
     </header>
   )
@@ -356,7 +393,7 @@ function ProductSection() {
       id="product"
       style={{
         padding: '6rem 0',
-        background: '#fffbf5',
+        background: '#eef2ff',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -369,7 +406,7 @@ function ProductSection() {
           right: '-10%',
           width: '50%',
           height: '200%',
-          background: 'radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)',
           borderRadius: '50%',
         }}
       />
@@ -382,8 +419,8 @@ function ProductSection() {
           variants={fadeUp}
           style={{ textAlign: 'center', marginBottom: '4rem' }}
         >
-          <h2 className="section-title">Our Product</h2>
-          <div className="section-divider" />
+          <h2 className="section-title-blue">Our Product</h2>
+          <div className="section-divider-blue" />
         </motion.div>
 
         <div
@@ -405,7 +442,7 @@ function ProductSection() {
                 style={{
                   position: 'absolute',
                   inset: '-4px',
-                  background: 'linear-gradient(to right, #ea580c, #f97316)',
+                  background: 'linear-gradient(to right, #6366f1, #818cf8)',
                   borderRadius: '1rem',
                   filter: 'blur(12px)',
                   opacity: 0.3,
@@ -434,7 +471,7 @@ function ProductSection() {
           >
             <span
               style={{
-                color: '#f97316',
+                color: '#6366f1',
                 fontWeight: 700,
                 letterSpacing: '0.1em',
                 fontSize: '0.75rem',
@@ -481,7 +518,7 @@ function ProductSection() {
                   >
                     <CheckCircle
                       size={20}
-                      style={{ color: '#f97316', marginRight: '0.75rem', flexShrink: 0 }}
+                      style={{ color: '#6366f1', marginRight: '0.75rem', flexShrink: 0 }}
                     />
                     {item}
                   </li>
@@ -492,7 +529,7 @@ function ProductSection() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                background: '#f97316',
+                background: '#6366f1',
                 color: 'white',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
@@ -500,10 +537,10 @@ function ProductSection() {
                 fontWeight: 700,
                 cursor: 'pointer',
                 transition: 'background 0.2s',
-                boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
               }}
-              onMouseOver={(e) => (e.target.style.background = '#ea580c')}
-              onMouseOut={(e) => (e.target.style.background = '#f97316')}
+              onMouseOver={(e) => (e.target.style.background = '#4f46e5')}
+              onMouseOut={(e) => (e.target.style.background = '#6366f1')}
             >
               詳細を見る
               <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
@@ -511,6 +548,26 @@ function ProductSection() {
           </motion.div>
         </div>
       </div>
+
+      <style>{`
+        .section-title-blue {
+          font-size: clamp(2rem, 5vw, 2.5rem);
+          font-weight: 700;
+          color: #111827;
+        }
+        .section-divider-blue {
+          width: 3rem;
+          height: 3px;
+          background: linear-gradient(to right, #4f46e5, #6366f1);
+          margin: 1rem auto 0;
+          border-radius: 9999px;
+        }
+        .section-container {
+          max-width: 80rem;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+        }
+      `}</style>
     </section>
   )
 }
@@ -519,24 +576,24 @@ function ServicesSection() {
   const services = [
     {
       icon: Code,
-      bgColor: 'rgba(249, 115, 22, 0.1)',
-      iconColor: '#f97316',
+      bgColor: 'rgba(99, 102, 241, 0.1)',
+      iconColor: '#6366f1',
       title: 'System Development',
       description:
         'Webアプリケーションから業務システムまで、スケーラブルで堅牢なシステムを構築します。モダンな技術選定で、将来性のある開発を行います。',
     },
     {
       icon: Lightbulb,
-      bgColor: 'rgba(251, 146, 60, 0.1)',
-      iconColor: '#fb923c',
+      bgColor: 'rgba(129, 140, 248, 0.1)',
+      iconColor: '#818cf8',
       title: 'DX Consulting',
       description:
         '単なるデジタル化ではなく、ビジネスモデルの変革を支援。現状の課題を分析し、最適なデジタルソリューションを提案・導入します。',
     },
     {
       icon: TrendingUp,
-      bgColor: 'rgba(234, 88, 12, 0.1)',
-      iconColor: '#ea580c',
+      bgColor: 'rgba(79, 70, 229, 0.1)',
+      iconColor: '#4f46e5',
       title: 'Marketing Support',
       description:
         'LINEを活用したCRM施策を中心に、Web広告運用からSNS戦略まで、売上向上に直結するマーケティング施策を実行支援します。',
@@ -559,7 +616,7 @@ function ServicesSection() {
           variants={fadeUp}
           style={{ textAlign: 'center', marginBottom: '4rem' }}
         >
-          <h2 className="section-title">Services</h2>
+          <h2 className="section-title-blue">Services</h2>
           <p style={{ color: '#6b7280', marginTop: '1rem' }}>
             テクノロジーの力でビジネスを加速させる、包括的なソリューション。
           </p>
@@ -658,8 +715,8 @@ function ServicesSection() {
               padding: '1rem 2rem',
               borderRadius: '9999px',
               color: '#6b7280',
-              background: '#fff7ed',
-              border: '1px solid #fed7aa',
+              background: '#eef2ff',
+              border: '1px solid #c7d2fe',
             }}
           >
             <Clock size={16} style={{ marginRight: '0.5rem' }} />
@@ -667,6 +724,19 @@ function ServicesSection() {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        .section-title-blue {
+          font-size: clamp(2rem, 5vw, 2.5rem);
+          font-weight: 700;
+          color: #111827;
+        }
+        .section-container {
+          max-width: 80rem;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+        }
+      `}</style>
     </section>
   )
 }
@@ -696,7 +766,7 @@ function CompanySection() {
       id="company"
       style={{
         padding: '6rem 0',
-        background: '#fffbf5',
+        background: '#eef2ff',
       }}
     >
       <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
@@ -707,7 +777,7 @@ function CompanySection() {
           variants={fadeUp}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
-          <h2 className="section-title">Company</h2>
+          <h2 className="section-title-blue">Company</h2>
         </motion.div>
 
         <motion.div
@@ -734,7 +804,7 @@ function CompanySection() {
                     transition: 'background 0.2s',
                   }}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.background = '#fffbf5')
+                    (e.currentTarget.style.background = '#eef2ff')
                   }
                   onMouseOut={(e) => (e.currentTarget.style.background = 'white')}
                 >
@@ -744,7 +814,7 @@ function CompanySection() {
                       fontWeight: 500,
                       textAlign: 'left',
                       width: '30%',
-                      background: '#fff7ed',
+                      background: '#e0e7ff',
                       color: '#374151',
                       verticalAlign: 'top',
                     }}
@@ -765,6 +835,14 @@ function CompanySection() {
           </table>
         </motion.div>
       </div>
+
+      <style>{`
+        .section-title-blue {
+          font-size: clamp(2rem, 5vw, 2.5rem);
+          font-weight: 700;
+          color: #111827;
+        }
+      `}</style>
     </section>
   )
 }
@@ -786,7 +864,7 @@ function ContactSection() {
           variants={fadeUp}
           style={{ textAlign: 'center', marginBottom: '3rem' }}
         >
-          <h2 className="section-title">Contact</h2>
+          <h2 className="section-title-blue">Contact</h2>
           <p style={{ color: '#6b7280', marginTop: '1rem' }}>
             お仕事のご依頼、ご相談などお気軽にお問い合わせください。
           </p>
@@ -800,8 +878,8 @@ function ContactSection() {
           style={{
             padding: '2.5rem',
             borderRadius: '1rem',
-            background: '#fffbf5',
-            border: '1px solid #fed7aa',
+            background: '#eef2ff',
+            border: '1px solid #c7d2fe',
           }}
         >
           <div
@@ -839,8 +917,8 @@ function ContactSection() {
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#f97316'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
+                  e.target.style.borderColor = '#6366f1'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#d1d5db'
@@ -875,8 +953,8 @@ function ContactSection() {
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#f97316'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
+                  e.target.style.borderColor = '#6366f1'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#d1d5db'
@@ -913,8 +991,8 @@ function ContactSection() {
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#f97316'
-                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
+                e.target.style.borderColor = '#6366f1'
+                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = '#d1d5db'
@@ -952,8 +1030,8 @@ function ContactSection() {
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#f97316'
-                e.target.style.boxShadow = '0 0 0 3px rgba(249, 115, 22, 0.1)'
+                e.target.style.borderColor = '#6366f1'
+                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = '#d1d5db'
@@ -966,7 +1044,7 @@ function ContactSection() {
             <button
               type="submit"
               style={{
-                background: 'linear-gradient(to right, #ea580c, #f97316)',
+                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
                 color: 'white',
                 fontWeight: 700,
                 padding: '1rem 3rem',
@@ -975,7 +1053,7 @@ function ContactSection() {
                 cursor: 'pointer',
                 fontSize: '1rem',
                 transition: 'transform 0.2s, box-shadow 0.2s',
-                boxShadow: '0 10px 25px -5px rgba(234, 88, 12, 0.3)',
+                boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.3)',
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = 'scale(1.05)'
@@ -989,6 +1067,14 @@ function ContactSection() {
           </div>
         </motion.form>
       </div>
+
+      <style>{`
+        .section-title-blue {
+          font-size: clamp(2rem, 5vw, 2.5rem);
+          font-weight: 700;
+          color: #111827;
+        }
+      `}</style>
     </section>
   )
 }
@@ -997,9 +1083,9 @@ function Footer() {
   return (
     <footer
       style={{
-        background: '#fffbf5',
+        background: '#eef2ff',
         padding: '2rem 0',
-        borderTop: '1px solid #fed7aa',
+        borderTop: '1px solid #c7d2fe',
       }}
     >
       <div
@@ -1018,7 +1104,7 @@ function Footer() {
             color: '#111827',
           }}
         >
-          soular<span style={{ color: '#f97316' }}>.</span>
+          soular<span style={{ color: '#6366f1' }}>.</span>
         </span>
         <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
           &copy; 2024 soular Inc. All rights reserved.
@@ -1026,6 +1112,11 @@ function Footer() {
       </div>
 
       <style>{`
+        .section-container {
+          max-width: 80rem;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+        }
         @media (min-width: 768px) {
           footer .section-container {
             flex-direction: row !important;
@@ -1037,7 +1128,7 @@ function Footer() {
   )
 }
 
-export default function SoularLanding() {
+export default function SoularLandingBlue() {
   return (
     <>
       <Navigation />
