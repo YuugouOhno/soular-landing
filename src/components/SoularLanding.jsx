@@ -585,28 +585,22 @@ function ProductSection() {
 function ServicesSection() {
   const services = [
     {
-      icon: MessageCircle,
-      bgColor: 'rgba(30, 136, 229, 0.1)',
-      iconColor: '#1e88e5',
       title: '公式LINE管理サービス',
       description:
         'LINE公式アカウントの構築から運用まで一括サポート。顧客管理、自動応答、予約システム、物販機能を統合し、リピーター獲得と業務効率化を実現します。',
+      image: '/service-1.png',
     },
     {
-      icon: TrendingUp,
-      bgColor: 'rgba(46, 125, 50, 0.1)',
-      iconColor: '#2e7d32',
       title: 'RPO採用運用代行',
       description:
         '採用目標から逆算した人員拡充を支援。採用設計から媒体運用、面接・見学対応、クロージング、研修まで一貫代行。紹介会社・人事経験を活かしたノウハウで、クリニック・福祉施設からスタートアップ、上場企業まで幅広く対応します。',
+      image: '/service-2.png',
     },
     {
-      icon: Lightbulb,
-      bgColor: 'rgba(67, 160, 71, 0.1)',
-      iconColor: '#43a047',
       title: '蓬（ヨモギ）農業推進・支援事業',
       description:
         '耕作放棄地や遊休農地を活用し、国産で高品質なヨモギを安定供給。生葉から乾燥粉末まで幅広い用途に対応し、飲食・美容・健康・アロマなど多業種へ原料を卸売りします。',
+      image: '/service-3.png',
     },
   ]
 
@@ -643,33 +637,36 @@ function ServicesSection() {
             gap: '2rem',
           }}
         >
-          {services.map((service, index) => {
-            const IconComponent = service.icon
-            return (
-              <motion.div
-                key={index}
-                variants={fadeUp}
+          {services.map((service, index) => (
+            <motion.div
+              key={index}
+              variants={fadeUp}
+              style={{
+                borderRadius: '1rem',
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                overflow: 'hidden',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+              }}
+            >
+              <div
                 style={{
-                  padding: '2rem',
-                  borderRadius: '1rem',
-                  background: 'white',
-                  border: '1px solid #e5e7eb',
+                  width: '100%',
+                  height: '280px',
+                  overflow: 'hidden',
                 }}
               >
-                <div
+                <img
+                  src={service.image}
+                  alt={service.title}
                   style={{
-                    width: '3.5rem',
-                    height: '3.5rem',
-                    background: service.bgColor,
-                    borderRadius: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '1.5rem',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                   }}
-                >
-                  <IconComponent size={28} style={{ color: service.iconColor }} />
-                </div>
+                />
+              </div>
+              <div style={{ padding: '2rem' }}>
                 <h3
                   style={{
                     fontSize: '1.25rem',
@@ -689,9 +686,9 @@ function ServicesSection() {
                 >
                   {service.description}
                 </p>
-              </motion.div>
-            )
-          })}
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
         <motion.div
