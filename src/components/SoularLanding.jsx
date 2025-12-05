@@ -86,7 +86,7 @@ function Navigation() {
               letterSpacing: '0.05em',
             }}
           >
-            soular<span style={{ color: '#6366f1' }}>.</span>
+            soular<span style={{ color: '#1e88e5' }}>.</span>
           </a>
 
           {/* Desktop Nav */}
@@ -109,7 +109,7 @@ function Navigation() {
                   fontWeight: 500,
                   transition: 'color 0.2s',
                 }}
-                onMouseOver={(e) => (e.target.style.color = '#6366f1')}
+                onMouseOver={(e) => (e.target.style.color = '#1e88e5')}
                 onMouseOut={(e) => (e.target.style.color = '#4b5563')}
               >
                 {link.label}
@@ -118,7 +118,7 @@ function Navigation() {
             <a
               href="#contact"
               style={{
-                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
+                background: '#1e88e5',
                 color: 'white',
                 padding: '0.5rem 1.25rem',
                 borderRadius: '9999px',
@@ -126,7 +126,7 @@ function Navigation() {
                 fontWeight: 500,
                 textDecoration: 'none',
                 transition: 'opacity 0.2s',
-                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
+                boxShadow: '0 4px 12px rgba(30, 136, 229, 0.3)',
               }}
               onMouseOver={(e) => (e.target.style.opacity = '0.9')}
               onMouseOut={(e) => (e.target.style.opacity = '1')}
@@ -183,7 +183,7 @@ function Navigation() {
               style={{
                 display: 'block',
                 marginTop: '0.75rem',
-                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
+                background: '#1e88e5',
                 color: 'white',
                 padding: '0.75rem 1.25rem',
                 borderRadius: '9999px',
@@ -226,11 +226,11 @@ function HeroSection() {
           minWidth: 200.0,
           scale: 1.0,
           scaleMobile: 1.0,
-          color: 0x6366f1,
+          color: 0x1e88e5,
           backgroundColor: 0xffffff,
-          points: 12.0,
-          maxDistance: 20.0,
-          spacing: 18.0,
+          points: 14.0,
+          maxDistance: 22.0,
+          spacing: 16.0,
         })
       )
     }
@@ -265,7 +265,7 @@ function HeroSection() {
       >
         <p
           style={{
-            color: '#4f46e5',
+            color: '#1e88e5',
             fontWeight: 700,
             letterSpacing: '0.2em',
             marginBottom: '1rem',
@@ -345,7 +345,7 @@ function HeroSection() {
           50% { transform: translateY(10px); }
         }
         .text-gradient-blue {
-          background: linear-gradient(to right, #4f46e5, #818cf8);
+          background: #1e88e5;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -353,14 +353,14 @@ function HeroSection() {
         .btn-primary-blue {
           display: inline-flex;
           align-items: center;
-          background: linear-gradient(to right, #4f46e5, #6366f1);
+          background: #1e88e5;
           color: white;
           padding: 0.875rem 2rem;
           border-radius: 9999px;
           font-weight: 600;
           text-decoration: none;
           transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+          box-shadow: 0 10px 25px -5px rgba(30, 136, 229, 0.3);
         }
         .btn-primary-blue:hover {
           transform: scale(1.05);
@@ -378,8 +378,8 @@ function HeroSection() {
           transition: border-color 0.2s, color 0.2s;
         }
         .btn-secondary-blue:hover {
-          border-color: #6366f1;
-          color: #6366f1;
+          border-color: #1e88e5;
+          color: #1e88e5;
         }
       `}</style>
     </header>
@@ -392,7 +392,7 @@ function ProductSection() {
       id="product"
       style={{
         padding: '6rem 0',
-        background: '#eef2ff',
+        background: 'linear-gradient(135deg, #e3f2fd 0%, #e8f5e9 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -405,7 +405,18 @@ function ProductSection() {
           right: '-10%',
           width: '50%',
           height: '200%',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(30, 136, 229, 0.08) 0%, transparent 70%)',
+          borderRadius: '50%',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '-30%',
+          left: '-10%',
+          width: '40%',
+          height: '150%',
+          background: 'radial-gradient(circle, rgba(67, 160, 71, 0.06) 0%, transparent 70%)',
           borderRadius: '50%',
         }}
       />
@@ -441,7 +452,7 @@ function ProductSection() {
                 style={{
                   position: 'absolute',
                   inset: '-4px',
-                  background: 'linear-gradient(to right, #6366f1, #818cf8)',
+                  background: '#1e88e5',
                   borderRadius: '1rem',
                   filter: 'blur(12px)',
                   opacity: 0.3,
@@ -470,7 +481,7 @@ function ProductSection() {
           >
             <span
               style={{
-                color: '#6366f1',
+                color: '#1e88e5',
                 fontWeight: 700,
                 letterSpacing: '0.1em',
                 fontSize: '0.75rem',
@@ -517,7 +528,7 @@ function ProductSection() {
                   >
                     <CheckCircle
                       size={20}
-                      style={{ color: '#6366f1', marginRight: '0.75rem', flexShrink: 0 }}
+                      style={{ color: '#43a047', marginRight: '0.75rem', flexShrink: 0 }}
                     />
                     {item}
                   </li>
@@ -528,18 +539,18 @@ function ProductSection() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                background: '#6366f1',
+                background: '#1e88e5',
                 color: 'white',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '0.5rem',
                 border: 'none',
                 fontWeight: 700,
                 cursor: 'pointer',
-                transition: 'background 0.2s',
-                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
+                transition: 'opacity 0.2s',
+                boxShadow: '0 4px 12px rgba(30, 136, 229, 0.3)',
               }}
-              onMouseOver={(e) => (e.target.style.background = '#4f46e5')}
-              onMouseOut={(e) => (e.target.style.background = '#6366f1')}
+              onMouseOver={(e) => (e.target.style.opacity = '0.9')}
+              onMouseOut={(e) => (e.target.style.opacity = '1')}
             >
               詳細を見る
               <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
@@ -557,7 +568,7 @@ function ProductSection() {
         .section-divider-blue {
           width: 3rem;
           height: 3px;
-          background: linear-gradient(to right, #4f46e5, #6366f1);
+          background: #1e88e5;
           margin: 1rem auto 0;
           border-radius: 9999px;
         }
@@ -575,24 +586,24 @@ function ServicesSection() {
   const services = [
     {
       icon: MessageCircle,
-      bgColor: 'rgba(99, 102, 241, 0.1)',
-      iconColor: '#6366f1',
+      bgColor: 'rgba(30, 136, 229, 0.1)',
+      iconColor: '#1e88e5',
       title: '公式LINE管理サービス',
       description:
         'LINE公式アカウントの構築から運用まで一括サポート。顧客管理、自動応答、予約システム、物販機能を統合し、リピーター獲得と業務効率化を実現します。',
     },
     {
       icon: TrendingUp,
-      bgColor: 'rgba(129, 140, 248, 0.1)',
-      iconColor: '#818cf8',
+      bgColor: 'rgba(46, 125, 50, 0.1)',
+      iconColor: '#2e7d32',
       title: 'RPO採用運用代行',
       description:
         '採用目標から逆算した人員拡充を支援。採用設計から媒体運用、面接・見学対応、クロージング、研修まで一貫代行。紹介会社・人事経験を活かしたノウハウで、クリニック・福祉施設からスタートアップ、上場企業まで幅広く対応します。',
     },
     {
       icon: Lightbulb,
-      bgColor: 'rgba(79, 70, 229, 0.1)',
-      iconColor: '#4f46e5',
+      bgColor: 'rgba(67, 160, 71, 0.1)',
+      iconColor: '#43a047',
       title: '蓬（ヨモギ）農業推進・支援事業',
       description:
         '耕作放棄地や遊休農地を活用し、国産で高品質なヨモギを安定供給。生葉から乾燥粉末まで幅広い用途に対応し、飲食・美容・健康・アロマなど多業種へ原料を卸売りします。',
@@ -643,12 +654,6 @@ function ServicesSection() {
                   borderRadius: '1rem',
                   background: 'white',
                   border: '1px solid #e5e7eb',
-                  transition: 'all 0.3s ease',
-                  cursor: 'default',
-                }}
-                whileHover={{
-                  y: -5,
-                  boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <div
@@ -714,8 +719,8 @@ function ServicesSection() {
               padding: '1rem 2rem',
               borderRadius: '9999px',
               color: '#6b7280',
-              background: '#eef2ff',
-              border: '1px solid #c7d2fe',
+              background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.08), rgba(67, 160, 71, 0.08))',
+              border: '1px solid rgba(30, 136, 229, 0.2)',
             }}
           >
             <Clock size={16} style={{ marginRight: '0.5rem' }} />
@@ -765,7 +770,7 @@ function CompanySection() {
       id="company"
       style={{
         padding: '6rem 0',
-        background: '#eef2ff',
+        background: 'linear-gradient(135deg, #e3f2fd 0%, #e8f5e9 100%)',
       }}
     >
       <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
@@ -800,12 +805,7 @@ function CompanySection() {
                   style={{
                     borderBottom:
                       index < companyInfo.length - 1 ? '1px solid #e5e7eb' : 'none',
-                    transition: 'background 0.2s',
                   }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.background = '#eef2ff')
-                  }
-                  onMouseOut={(e) => (e.currentTarget.style.background = 'white')}
                 >
                   <th
                     style={{
@@ -813,7 +813,7 @@ function CompanySection() {
                       fontWeight: 500,
                       textAlign: 'left',
                       width: '30%',
-                      background: '#e0e7ff',
+                      background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.1), rgba(67, 160, 71, 0.1))',
                       color: '#374151',
                       verticalAlign: 'top',
                     }}
@@ -877,8 +877,8 @@ function ContactSection() {
           style={{
             padding: '2.5rem',
             borderRadius: '1rem',
-            background: '#eef2ff',
-            border: '1px solid #c7d2fe',
+            background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.05), rgba(67, 160, 71, 0.05))',
+            border: '1px solid rgba(30, 136, 229, 0.2)',
           }}
         >
           <div
@@ -916,8 +916,8 @@ function ContactSection() {
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#6366f1'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                  e.target.style.borderColor = '#1e88e5'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#d1d5db'
@@ -952,8 +952,8 @@ function ContactSection() {
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#6366f1'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                  e.target.style.borderColor = '#1e88e5'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#d1d5db'
@@ -990,8 +990,8 @@ function ContactSection() {
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#6366f1'
-                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                e.target.style.borderColor = '#1e88e5'
+                e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = '#d1d5db'
@@ -1029,8 +1029,8 @@ function ContactSection() {
                 transition: 'border-color 0.2s, box-shadow 0.2s',
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = '#6366f1'
-                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'
+                e.target.style.borderColor = '#1e88e5'
+                e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = '#d1d5db'
@@ -1043,7 +1043,7 @@ function ContactSection() {
             <button
               type="submit"
               style={{
-                background: 'linear-gradient(to right, #4f46e5, #6366f1)',
+                background: '#1e88e5',
                 color: 'white',
                 fontWeight: 700,
                 padding: '1rem 3rem',
@@ -1052,7 +1052,7 @@ function ContactSection() {
                 cursor: 'pointer',
                 fontSize: '1rem',
                 transition: 'transform 0.2s, box-shadow 0.2s',
-                boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.3)',
+                boxShadow: '0 10px 25px -5px rgba(30, 136, 229, 0.3)',
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = 'scale(1.05)'
@@ -1082,9 +1082,9 @@ function Footer() {
   return (
     <footer
       style={{
-        background: '#eef2ff',
+        background: 'linear-gradient(135deg, #e3f2fd 0%, #e8f5e9 100%)',
         padding: '2rem 0',
-        borderTop: '1px solid #c7d2fe',
+        borderTop: '1px solid rgba(30, 136, 229, 0.2)',
       }}
     >
       <div
@@ -1103,7 +1103,7 @@ function Footer() {
             color: '#111827',
           }}
         >
-          soular<span style={{ color: '#6366f1' }}>.</span>
+          soular<span style={{ color: '#1e88e5' }}>.</span>
         </span>
         <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
           &copy; 2024 soular Inc. All rights reserved.
