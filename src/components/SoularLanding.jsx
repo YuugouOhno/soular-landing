@@ -294,11 +294,10 @@ function HeroSection() {
             color: '#4b5563',
           }}
         >
-          細部に
           <span className="text-gradient-blue" style={{ fontWeight: 700 }}>
             魂
           </span>
-          は宿る。
+          を込め、尽くし、熱く挑む
         </h2>
         <div
           style={{
@@ -591,7 +590,7 @@ function ServicesSection() {
       image: '/service-1.png',
     },
     {
-      title: 'RPO採用運用代行',
+      title: 'RPO事業・人事コンサルティング',
       description:
         '採用目標から逆算した人員拡充を支援。採用設計から媒体運用、面接・見学対応、クロージング、研修まで一貫代行。紹介会社・人事経験を活かしたノウハウで、クリニック・福祉施設からスタートアップ、上場企業まで幅広く対応します。',
       image: '/service-2.png',
@@ -745,7 +744,7 @@ function ServicesSection() {
 function CompanySection() {
   const companyInfo = [
     { label: '会社名', value: '株式会社soular' },
-    { label: '設立', value: '2025年 X月' },
+    { label: '設立', value: '2025年 1月' },
     { label: '代表者', value: '代表取締役 浜田颯流' },
     {
       label: '事業内容',
@@ -759,7 +758,7 @@ function CompanySection() {
         </>
       ),
     },
-    { label: '所在地', value: '〒000-0000 東京都...' },
+    { label: '所在地', value: '〒110-0005 東京都台東区上野1丁目17番6号広小路ビル8F-B' },
   ]
 
   return (
