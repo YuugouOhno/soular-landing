@@ -873,7 +873,7 @@ function ContactSection() {
           to: 'info@soular-inc.com',
           from_name: formData.name,
           subject: `【お問い合わせ】${formData.subject}`,
-          message: formData.message,
+          message: `名前：${formData.name}\n\n${formData.message}`,
           email: formData.email,
           reply_to: formData.email,
         }),
