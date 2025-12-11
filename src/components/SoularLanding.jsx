@@ -534,7 +534,10 @@ function ProductSection() {
                 )
               )}
             </ul>
-            <button
+            <a
+              href="https://linemade.link/lp"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -547,13 +550,14 @@ function ProductSection() {
                 cursor: 'pointer',
                 transition: 'opacity 0.2s',
                 boxShadow: '0 4px 12px rgba(30, 136, 229, 0.3)',
+                textDecoration: 'none',
               }}
               onMouseOver={(e) => (e.target.style.opacity = '0.9')}
               onMouseOut={(e) => (e.target.style.opacity = '1')}
             >
               詳細を見る
               <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
-            </button>
+            </a>
           </motion.div>
         </div>
       </div>
