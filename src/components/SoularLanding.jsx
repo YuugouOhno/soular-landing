@@ -843,6 +843,57 @@ function CompanySection() {
 }
 
 function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  })
+  const [status, setStatus] = useState('idle') // idle, submitting, success, error
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('submitting')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: 'a16ebc02-09c2-4975-bd7b-77bae65bef9a',
+          to: 'info@soular-inc.com',
+          from_name: formData.name,
+          subject: `【お問い合わせ】${formData.subject}`,
+          message: formData.message,
+          email: formData.email,
+          reply_to: formData.email,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setStatus('success')
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      } else {
+        setStatus('error')
+        setErrorMessage(result.message || '送信に失敗しました。')
+      }
+    } catch {
+      setStatus('error')
+      setErrorMessage('ネットワークエラーが発生しました。')
+    }
+  }
+
   return (
     <section
       id="contact"
@@ -865,27 +916,165 @@ function ContactSection() {
           </p>
         </motion.div>
 
-        <motion.form
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          variants={fadeUp}
-          style={{
-            padding: '2.5rem',
-            borderRadius: '1rem',
-            background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.05), rgba(67, 160, 71, 0.05))',
-            border: '1px solid rgba(30, 136, 229, 0.2)',
-          }}
-        >
-          <div
+        {status === 'success' ? (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.5rem',
-              marginBottom: '1.5rem',
+              padding: '3rem',
+              borderRadius: '1rem',
+              background: 'linear-gradient(135deg, rgba(67, 160, 71, 0.1), rgba(30, 136, 229, 0.1))',
+              border: '1px solid rgba(67, 160, 71, 0.3)',
+              textAlign: 'center',
             }}
           >
-            <div>
+            <CheckCircle size={48} style={{ color: '#43a047', marginBottom: '1rem' }} />
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#111827', marginBottom: '0.5rem' }}>
+              送信完了
+            </h3>
+            <p style={{ color: '#6b7280' }}>
+              お問い合わせありがとうございます。<br />
+              内容を確認の上、担当者よりご連絡いたします。
+            </p>
+            <button
+              onClick={() => setStatus('idle')}
+              style={{
+                marginTop: '1.5rem',
+                background: 'transparent',
+                color: '#1e88e5',
+                fontWeight: 600,
+                padding: '0.5rem 1.5rem',
+                borderRadius: '9999px',
+                border: '1px solid #1e88e5',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+              }}
+            >
+              新しいお問い合わせ
+            </button>
+          </motion.div>
+        ) : (
+          <motion.form
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-100px' }}
+            variants={fadeUp}
+            onSubmit={handleSubmit}
+            style={{
+              padding: '2.5rem',
+              borderRadius: '1rem',
+              background: 'linear-gradient(135deg, rgba(30, 136, 229, 0.05), rgba(67, 160, 71, 0.05))',
+              border: '1px solid rgba(30, 136, 229, 0.2)',
+            }}
+          >
+            {status === 'error' && (
+              <div
+                style={{
+                  marginBottom: '1.5rem',
+                  padding: '1rem',
+                  borderRadius: '0.5rem',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#dc2626',
+                  fontSize: '0.875rem',
+                }}
+              >
+                {errorMessage}
+              </div>
+            )}
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1.5rem',
+                marginBottom: '1.5rem',
+              }}
+            >
+              <div>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#374151',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  お名前 <span style={{ color: '#dc2626' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  placeholder="山田 太郎"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    background: 'white',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.5rem',
+                    color: '#1f2937',
+                    fontSize: '1rem',
+                    outline: 'none',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#1e88e5'
+                    e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db'
+                    e.target.style.boxShadow = 'none'
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#374151',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  メールアドレス <span style={{ color: '#dc2626' }}>*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="example@soular.co.jp"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    background: 'white',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.5rem',
+                    color: '#1f2937',
+                    fontSize: '1rem',
+                    outline: 'none',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#1e88e5'
+                    e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db'
+                    e.target.style.boxShadow = 'none'
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
               <label
                 style={{
                   display: 'block',
@@ -895,11 +1084,15 @@ function ContactSection() {
                   marginBottom: '0.5rem',
                 }}
               >
-                お名前
+                件名 <span style={{ color: '#dc2626' }}>*</span>
               </label>
               <input
                 type="text"
-                placeholder="山田 太郎"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+                placeholder="サービス導入について"
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
@@ -921,7 +1114,8 @@ function ContactSection() {
                 }}
               />
             </div>
-            <div>
+
+            <div style={{ marginBottom: '2rem' }}>
               <label
                 style={{
                   display: 'block',
@@ -931,11 +1125,15 @@ function ContactSection() {
                   marginBottom: '0.5rem',
                 }}
               >
-                メールアドレス
+                お問い合わせ内容 <span style={{ color: '#dc2626' }}>*</span>
               </label>
-              <input
-                type="email"
-                placeholder="example@soular.co.jp"
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows={5}
+                placeholder="お問い合わせ内容をご記入ください"
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
@@ -945,6 +1143,8 @@ function ContactSection() {
                   color: '#1f2937',
                   fontSize: '1rem',
                   outline: 'none',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
                   transition: 'border-color 0.2s, box-shadow 0.2s',
                 }}
                 onFocus={(e) => {
@@ -957,110 +1157,35 @@ function ContactSection() {
                 }}
               />
             </div>
-          </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label
-              style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#374151',
-                marginBottom: '0.5rem',
-              }}
-            >
-              件名
-            </label>
-            <input
-              type="text"
-              placeholder="サービス導入について"
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                background: 'white',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                color: '#1f2937',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s, box-shadow 0.2s',
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#1e88e5'
-                e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '2rem' }}>
-            <label
-              style={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#374151',
-                marginBottom: '0.5rem',
-              }}
-            >
-              お問い合わせ内容
-            </label>
-            <textarea
-              rows={5}
-              placeholder="お問い合わせ内容をご記入ください"
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                background: 'white',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                color: '#1f2937',
-                fontSize: '1rem',
-                outline: 'none',
-                resize: 'vertical',
-                fontFamily: 'inherit',
-                transition: 'border-color 0.2s, box-shadow 0.2s',
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#1e88e5'
-                e.target.style.boxShadow = '0 0 0 3px rgba(30, 136, 229, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#d1d5db'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
-          </div>
-
-          <div style={{ textAlign: 'center' }}>
-            <button
-              type="submit"
-              style={{
-                background: '#1e88e5',
-                color: 'white',
-                fontWeight: 700,
-                padding: '1rem 3rem',
-                borderRadius: '9999px',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                boxShadow: '0 10px 25px -5px rgba(30, 136, 229, 0.3)',
-              }}
-              onMouseOver={(e) => {
-                e.target.style.transform = 'scale(1.05)'
-              }}
-              onMouseOut={(e) => {
-                e.target.style.transform = 'scale(1)'
-              }}
-            >
-              送信する
-            </button>
-          </div>
-        </motion.form>
+            <div style={{ textAlign: 'center' }}>
+              <button
+                type="submit"
+                disabled={status === 'submitting'}
+                style={{
+                  background: status === 'submitting' ? '#9ca3af' : '#1e88e5',
+                  color: 'white',
+                  fontWeight: 700,
+                  padding: '1rem 3rem',
+                  borderRadius: '9999px',
+                  border: 'none',
+                  cursor: status === 'submitting' ? 'not-allowed' : 'pointer',
+                  fontSize: '1rem',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: status === 'submitting' ? 'none' : '0 10px 25px -5px rgba(30, 136, 229, 0.3)',
+                }}
+                onMouseOver={(e) => {
+                  if (status !== 'submitting') e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'scale(1)'
+                }}
+              >
+                {status === 'submitting' ? '送信中...' : '送信する'}
+              </button>
+            </div>
+          </motion.form>
+        )}
       </div>
 
       <style>{`
