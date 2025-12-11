@@ -1227,7 +1227,7 @@ function Footer() {
           soular<span style={{ color: '#1e88e5' }}>.</span>
         </span>
         <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-          &copy; 2024 soular Inc. All rights reserved.
+          &copy; 2025 soular Inc. All rights reserved.
         </p>
       </div>
 
