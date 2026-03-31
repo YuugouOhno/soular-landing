@@ -748,7 +748,7 @@ function ServicesSection() {
 function CompanySection() {
   const companyInfo = [
     { label: '会社名', value: '株式会社soular' },
-    { label: '設立', value: '2025年 1月' },
+    { label: '設立', value: '2026年 3月' },
     { label: '代表者', value: '代表取締役 浜田颯流' },
     {
       label: '事業内容',
