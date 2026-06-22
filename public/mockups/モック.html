@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社soular — Pattern F2: Kinetic Full</title>
+<link rel="icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Mono:wght@400;500&family=Murecho:wght@400;700;900&family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef3ff; --card:#ffffff; --ink:#0a1330; --ink-soft:#4e5a7e; --line:#d4ddf2;
+    --blue:#1f6dff; --blue-deep:#0a2a7a; --blue-tint:#4d86ff; --accent:#4d86ff;
+    --offwhite:#f4f7ff; --maxw:1240px; --ease:cubic-bezier(.19,1,.22,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:"Murecho","Schibsted Grotesk",system-ui,sans-serif;font-weight:400;line-height:1.8;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  :where(h1,h2,h3,h4){word-break:keep-all;overflow-wrap:anywhere}
+  ::selection{background:var(--blue);color:#fff}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"DM Mono",monospace}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 36px;width:100%}
+  .tag{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;display:inline-flex;align-items:center;gap:9px}
+  .tag::before{content:"";width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:20px 36px;color:var(--offwhite);transition:background .45s var(--ease),color .45s var(--ease),box-shadow .45s var(--ease),padding .45s var(--ease)}
+  .nav.is-stuck{background:var(--paper);color:var(--ink);box-shadow:0 1px 0 var(--line);padding-top:14px;padding-bottom:14px}
+  .brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-family:"DM Mono",monospace;font-size:13px;letter-spacing:.04em;opacity:.86;transition:opacity .2s}
+  .nav-links a:hover{opacity:1}
+  .nav-cta{border:1.5px solid currentColor;padding:9px 18px;border-radius:100px;font-family:"DM Mono",monospace;font-size:13px;opacity:1!important;transition:background .25s var(--ease),color .25s var(--ease)}
+  .nav.is-stuck .nav-cta:hover{background:var(--ink);color:var(--paper)}
+  .nav:not(.is-stuck) .nav-cta:hover{background:var(--offwhite);color:var(--blue)}
+  @media(max-width:980px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* hero */
+  .hero{background:var(--blue);color:var(--offwhite);position:relative;overflow:hidden;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:118px 0 80px}
+  .shards{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .shard{position:absolute;opacity:.5;will-change:transform}
+  .shard.s1{width:300px;height:300px;top:-60px;right:6%;background:var(--blue-tint);border-radius:42% 58% 60% 40%/45% 45% 55% 55%;filter:blur(2px);animation:float1 16s var(--ease) infinite alternate}
+  .shard.s2{width:160px;height:160px;bottom:14%;left:4%;background:var(--blue-deep);transform:rotate(20deg);border-radius:30px;animation:float2 13s var(--ease) infinite alternate}
+  .shard.s3{width:90px;height:90px;top:30%;right:30%;background:var(--offwhite);border-radius:24px;transform:rotate(15deg);opacity:.85;animation:float3 10s var(--ease) infinite alternate}
+  @keyframes float1{to{transform:translate(-40px,50px) rotate(40deg)}}
+  @keyframes float2{to{transform:translate(30px,-40px) rotate(-12deg)}}
+  @keyframes float3{to{transform:translate(-26px,34px) rotate(-20deg)}}
+  .hero-grid{position:absolute;inset:0;z-index:0;opacity:.1;background-image:linear-gradient(var(--offwhite) 1px,transparent 1px),linear-gradient(90deg,var(--offwhite) 1px,transparent 1px);background-size:74px 74px;mask-image:radial-gradient(120% 90% at 30% 40%,#000 30%,transparent 80%)}
+  .hero-inner{position:relative;z-index:2}
+  .hero .tag{color:var(--offwhite);margin-bottom:30px;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .15s}
+  .hero h1{font-family:"Murecho",sans-serif;font-weight:900;font-size:clamp(38px,6.4vw,92px);line-height:1.04;letter-spacing:-.025em;margin-bottom:30px}
+  .hero h1 .ln{display:block;overflow:hidden}
+  .hero h1 .ln > span{display:block;transform:translateY(105%);transition:transform 1.05s var(--ease)}
+  .hero h1 .ln:nth-child(2) > span{transition-delay:.1s}
+  .hero h1 .ln:nth-child(3) > span{transition-delay:.2s}
+  .reveal .hero h1 .ln > span{transform:translateY(0)}
+  .hero h1 .dot{color:#fff}
+  .kw-line{display:inline-flex;align-items:baseline;flex-wrap:wrap;font-family:"DM Mono",monospace;font-size:clamp(15px,2.1vw,24px);color:var(--offwhite);margin-bottom:36px;background:rgba(0,0,0,.18);padding:12px 18px;border-radius:10px;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .55s}
+  .kw-line .pr{opacity:.6;margin-right:6px}
+  .kw-wrap{display:inline-block;min-width:1ch}
+  .kw{display:inline-block;color:#fff;font-weight:500;transition:opacity .22s var(--ease),transform .22s var(--ease)}
+  .kw.swap{opacity:0;transform:translateY(-8px)}
+  .caret{color:#fff;font-weight:700;animation:blink 1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+  .hero-sub{max-width:820px;font-size:clamp(15px,1.5vw,18px);line-height:1.9;color:#dbe6ff;word-break:keep-all;overflow-wrap:anywhere;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .65s}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .75s}
+  .reveal .hero .tag,.reveal .kw-line,.reveal .hero-sub,.reveal .hero-actions{opacity:1;transform:none}
+  .btn{font-family:"DM Mono",monospace;font-size:14px;padding:15px 26px;border-radius:100px;cursor:pointer;border:1.5px solid transparent;transition:all .3s var(--ease);display:inline-flex;align-items:center;gap:9px;font-weight:500}
+  .btn .arr{transition:transform .3s var(--ease)}.btn:hover .arr{transform:translateX(4px)}
+  .btn-fill{background:var(--offwhite);color:var(--blue)}
+  .btn-fill:hover{background:#fff;color:var(--blue-deep);transform:translateY(-2px)}
+  .btn-line{border-color:rgba(244,247,255,.4);color:var(--offwhite)}
+  .btn-line:hover{border-color:var(--offwhite);background:rgba(255,255,255,.06)}
+
+  .ticker{background:var(--ink);color:var(--offwhite);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--blue)}
+  .ticker-track{display:inline-flex;padding:15px 0;animation:scroll-x 38s linear infinite;will-change:transform}
+  .ticker:hover .ticker-track{animation-play-state:paused}
+  .ticker-item{font-family:"DM Mono",monospace;font-size:13px;letter-spacing:.08em;padding:0 26px;display:inline-flex;align-items:center;gap:26px;opacity:.8}
+  .ticker-item::after{content:"◆";color:var(--blue-tint);font-size:9px}
+  .ticker-item b{color:#fff;opacity:1;font-weight:500}
+  @keyframes scroll-x{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  .zone{padding:120px 0;position:relative}
+  .zone--ink{background:var(--ink);color:var(--offwhite)}
+  .zone--blue{background:var(--blue);color:var(--offwhite)}
+  .z-head{margin-bottom:56px;max-width:820px}
+  .z-head .tag{margin-bottom:20px}
+  .z-head h2{font-family:"Murecho",sans-serif;font-weight:900;font-size:clamp(30px,4.4vw,56px);line-height:1.2;letter-spacing:-.02em}
+  .z-head h2 .hl{color:var(--blue)}
+  .zone--ink .z-head h2 .hl,.zone--blue .z-head h2 .hl{color:#fff}
+  .z-head p{margin-top:18px;color:var(--ink-soft);font-size:16px;line-height:1.95;max-width:600px;word-break:keep-all;overflow-wrap:anywhere}
+  .zone--ink .z-head p,.zone--blue .z-head p{color:rgba(255,255,255,.82)}
+  .ru{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .ru.in{opacity:1;transform:none}
+
+  /* philosophy */
+  .naming{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;margin-bottom:72px}
+  @media(max-width:900px){.naming{grid-template-columns:1fr;gap:36px}}
+  .naming h3{font-family:"Murecho";font-weight:900;font-size:clamp(24px,3.4vw,40px);line-height:1.4}
+  .naming h3 b{color:var(--blue)}
+  .naming p{margin-top:18px;color:var(--ink-soft);font-size:15px}
+  .naming p b{color:var(--ink);font-weight:500}
+  .name-card{background:var(--blue);color:#fff;border-radius:18px;padding:48px 42px;position:relative;overflow:hidden}
+  .name-card::after{content:"";position:absolute;right:-30px;bottom:-30px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 65%)}
+  .name-card .bg{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(30px,4vw,44px);line-height:1.1;margin-bottom:14px}
+  .name-card p{color:rgba(255,255,255,.9);font-size:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .chips span{font-family:"DM Mono",monospace;font-size:12px;color:#fff;border:1px solid rgba(255,255,255,.34);border-radius:100px;padding:7px 14px}
+  .mvv{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:780px){.mvv{grid-template-columns:1fr}}
+  .mvv .c{border:1px solid var(--line);border-radius:16px;padding:30px;background:var(--card)}
+  .mvv .c .l{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .mvv .c h4{font-family:"Murecho";font-weight:900;font-size:19px;margin:10px 0 8px;line-height:1.4}
+  .mvv .c p{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .phil-lead{max-width:920px;font-size:clamp(16px,1.7vw,21px);line-height:2;color:var(--ink-soft);margin-top:8px;word-break:keep-all;overflow-wrap:anywhere}
+  .phil-lead b{color:var(--blue);font-weight:700}
+
+  /* story (ink) */
+  .story{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:900px){.story{grid-template-columns:1fr}}
+  .story .s{background:#10182f;border:1px solid #20294a;border-radius:16px;padding:34px}
+  .story .s .n{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.08em;color:var(--blue-tint)}
+  .story .s h4{font-family:"Murecho";font-weight:900;font-size:20px;margin:12px 0 12px;line-height:1.5}
+  .story .s p{color:#aeb8d8;font-size:13.5px;line-height:1.9}
+  /* 3-domain venn */
+  .venn-wrap{display:flex;justify-content:center;margin:4px 0 64px}
+  .venn{width:min(100%,520px);height:auto;overflow:visible}
+  .venn .vc{fill:#2f6bff;fill-opacity:.32;stroke:#7aa8ff;stroke-opacity:.55;stroke-width:1.4;mix-blend-mode:screen}
+  .venn .lab{fill:#fff;font-family:"Murecho",sans-serif;font-weight:900;font-size:23px}
+  .venn .en{fill:#bcd2ff;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.1em}
+  .venn .ctr{fill:#eaf3ff;font-family:"DM Mono",monospace;font-size:12.5px;letter-spacing:.16em}
+  .story-top{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;margin-bottom:60px}
+  @media(max-width:900px){.story-top{grid-template-columns:1fr;gap:28px}}
+  .story-top .z-head{margin-bottom:0;max-width:560px}
+  .story-top .venn-wrap{margin:0}
+
+  /* domains */
+  .domain{margin-bottom:18px}
+  .dhead{display:flex;align-items:flex-start;gap:22px;margin:36px 0 22px}
+  .dhead .no{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(34px,4vw,52px);line-height:.9;color:var(--blue);letter-spacing:-.02em}
+  .dhead .en{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .dhead h3{font-family:"Murecho";font-weight:900;font-size:clamp(24px,3vw,34px);line-height:1.2}
+  .dhead .soon{font-size:14px;font-weight:400;color:var(--ink-soft);margin-left:12px}
+  .dhead .dd{margin-top:8px;color:var(--ink-soft);font-size:14.5px;max-width:760px}
+  .dhead .dd b{color:var(--ink);font-weight:500}
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:980px){.svc-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.svc-grid{grid-template-columns:1fr}}
+  .svc-grid.cols4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:980px){.svc-grid.cols4{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.svc-grid.cols4{grid-template-columns:1fr}}
+  .tile{background:var(--card);border-radius:16px;padding:30px 28px;position:relative;overflow:hidden;isolation:isolate;border:1px solid var(--line);transition:transform .4s var(--ease),box-shadow .4s var(--ease);display:flex;flex-direction:column;min-height:200px}
+  .tile::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--blue);transform:translateY(101%);transition:transform .5s var(--ease)}
+  .tile:hover{transform:translateY(-4px);box-shadow:0 30px 60px -34px rgba(31,109,255,.5)}
+  .tile:hover::before{transform:translateY(0)}
+  .tile,.tile *{transition-property:color,background,transform,box-shadow,border-color}
+  .tile:hover,.tile:hover .t-no,.tile:hover h4,.tile:hover p,.tile:hover .cc,.tile:hover .feat span{color:var(--offwhite)}
+  .tile:hover .feat span{border-color:rgba(255,255,255,.4)}
+  .t-no{font-family:"DM Mono",monospace;font-size:12px;color:var(--blue);letter-spacing:.06em}
+  .tile h4{font-family:"Murecho";font-weight:900;font-size:18px;margin:8px 0 4px;line-height:1.45}
+  .tile .cc{font-size:12.5px;color:var(--blue-tint);margin-bottom:10px}
+  .tile p{color:var(--ink-soft);font-size:13px;line-height:1.8}
+  .feat{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .feat span{font-size:11px;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:4px 10px}
+  .tile .more{margin-top:14px;font-family:"DM Mono",monospace;font-size:12px;color:var(--blue);display:inline-flex;gap:6px}
+  .tile:hover .more{color:#fff}
+
+  /* synergy (blue) */
+  .syn{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(255,255,255,.28)}
+  @media(max-width:820px){.syn{grid-template-columns:1fr}}
+  .syn .s{padding:36px 34px;border-right:1px solid rgba(255,255,255,.28)}
+  .syn .s:first-child{padding-left:0}
+  .syn .s:last-child{padding-right:0;border-right:none}
+  @media(max-width:820px){.syn .s{border-right:none;border-bottom:1px solid rgba(255,255,255,.28);padding:30px 0}}
+  .syn .s .n{font-family:"DM Mono",monospace;font-size:12px;color:rgba(255,255,255,.85)}
+  .syn .s h4{font-family:"Murecho";font-weight:900;font-size:19px;margin:10px 0 10px}
+  .syn .s p{color:rgba(255,255,255,.85);font-size:13.5px;line-height:1.85}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:880px){.stats{grid-template-columns:1fr 1fr;gap:32px 24px}}
+  @media(max-width:560px){.stats{grid-template-columns:1fr}}
+  .stat{border-top:2px solid var(--ink);padding-top:22px}
+  .stat .s-num{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(38px,5vw,64px);line-height:1;letter-spacing:-.03em}
+  .stat .s-num .u{color:var(--blue);font-size:.38em;margin-left:3px}
+  .stat .s-lab{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.08em;color:var(--ink-soft);margin-top:14px;text-transform:uppercase}
+  .stats-note{margin-top:28px;font-family:"DM Mono",monospace;font-size:11px;color:#8a96b4;letter-spacing:.03em;line-height:1.7}
+  /* stats on dark / blue background */
+  .zone--ink .stat,.zone--blue .stat{border-top-color:rgba(255,255,255,.45)}
+  .zone--ink .stat .s-num .u,.zone--blue .stat .s-num .u{color:#5aa7ff}
+  .zone--ink .stat .s-lab,.zone--blue .stat .s-lab{color:rgba(255,255,255,.78)}
+  .zone--ink .stats-note,.zone--blue .stats-note{color:rgba(255,255,255,.62)}
+
+  /* company */
+  .ctable{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card)}
+  .crow{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--line)}
+  .crow:last-child{border-bottom:none}
+  @media(max-width:640px){.crow{grid-template-columns:1fr}}
+  .crow .k{padding:20px 28px;font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.06em;color:var(--ink-soft);background:#f6f9ff}
+  .crow .v{padding:20px 28px;font-size:15px}
+
+  /* cta */
+  .cta{background:var(--blue);color:var(--offwhite);padding:140px 0;text-align:center;position:relative;overflow:hidden}
+  .cta .shard{opacity:.4}
+  .cta-in{position:relative;z-index:2}
+  .cta .tag{color:var(--offwhite);margin-bottom:26px}
+  .cta h2{font-family:"Murecho";font-weight:900;font-size:clamp(34px,6vw,80px);line-height:1.1;letter-spacing:-.025em;margin-bottom:22px}
+  .cta h2 .dot{color:#fff}
+  .cta p{color:#dbe6ff;max-width:480px;margin:0 auto 38px;font-size:16px}
+  .cta .hero-actions{justify-content:center;opacity:1;transform:none}
+
+  .footer{background:var(--ink);color:var(--offwhite);padding:72px 0 44px}
+  .f-top{display:flex;justify-content:space-between;gap:48px;flex-wrap:wrap;margin-bottom:56px}
+  .footer .brand{font-size:24px;margin-bottom:14px}
+  .f-tag{color:#9aa6c2;font-size:14px;max-width:300px;line-height:1.8}
+  .f-cols{display:flex;gap:56px;flex-wrap:wrap}
+  .f-col h5{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.16em;color:#7682a0;text-transform:uppercase;margin-bottom:16px}
+  .f-col a{display:block;font-size:14px;color:#c2cce6;margin-bottom:10px;transition:color .2s}
+  .f-col a:hover{color:var(--blue-tint)}
+  .f-bot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #232a44;padding-top:26px;flex-wrap:wrap;gap:14px}
+  .f-bot span{font-family:"DM Mono",monospace;font-size:11.5px;color:#6a7390}
+
+  @media(max-width:560px){.wrap{padding:0 22px}.nav{padding:16px 22px}.zone{padding:84px 0}.kw-line{font-size:14px}.dhead{flex-direction:column;gap:8px}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.001ms!important}.hero h1 .ln > span{transform:none}.hero .tag,.kw-line,.hero-sub,.hero-actions{opacity:1;transform:none}.ru{opacity:1;transform:none}.tile::before{display:none}}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+</style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <a href="#" class="brand">soular</a>
+    <div class="nav-links">
+      <a href="#philosophy">理念</a><a href="#story">創業</a><a href="#domains">事業領域</a><a href="#company">会社情報</a>
+      <a href="#start" class="nav-cta">お問い合わせ</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-grid"></div>
+    <div class="shards"><span class="shard s1"></span><span class="shard s2"></span><span class="shard s3"></span></div>
+    <div class="hero-inner wrap">
+      <h1><span class="ln"><span>魂を込め、</span></span><span class="ln"><span>尽くし、</span></span><span class="ln"><span>熱く挑む<span class="dot">。</span></span></span></h1>
+      <div class="kw-line"><span class="pr">&gt;</span><span>[&nbsp;</span><span class="kw-wrap"><span class="kw" id="kw">医療現場</span></span><span>&nbsp;]</span><span>&nbsp;に、魂を。</span><span class="caret">_</span></div>
+      <p class="hero-sub">株式会社soularは、医療・人事・農業の現場に魂を込めて伴走する事業会社です。<br>不可能を可能にする挑戦を通じて、人々の明るい未来を設計します。</p>
+      <div class="hero-actions"><a href="#domains" class="btn btn-fill">事業領域を見る <span class="arr">→</span></a><a href="#philosophy" class="btn btn-line">理念を読む</a></div>
+    </div>
+  </header>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker">
+      <span class="ticker-item"><b>医療特化型HRMS</b> メディマネージャー / デンタルマネージャー</span>
+      <span class="ticker-item"><b>まごころAIチャット</b> 24時間働くデジタル受付</span>
+      <span class="ticker-item"><b>LINEメイド</b> 月給1.5万円の電子お手伝いさん</span>
+      <span class="ticker-item"><b>超・伴走型 外部人事</b> 採用から定着まで</span>
+      <span class="ticker-item"><b>次世代農業</b> よもぎと米の新しい循環</span>
+    </div>
+  </div>
+
+  <!-- PHILOSOPHY -->
+  <section class="zone" id="philosophy">
+    <div class="wrap">
+      <div class="z-head ru"><span class="tag">Corporate Identity</span><h2>すべての事業に魂を宿し、<br><span class="hl">社会を照らす太陽となる。</span></h2><p>私たちは、不可能を可能にする挑戦を通じて、人々の明るい未来を設計します。</p></div>
+      <p class="phil-lead ru">誠意や想い、開発しているITサービス、人事としての人との向き合い、農業など、すべての事業領域において一切の妥協なく<b>「魂」</b>を込めて取り組むこと。そして、私たちが関わる医療現場・企業・農家の方々にとって、未来を明るく照らす<b>「太陽」</b>のような存在であり続けるという、2つの約束が込められています。</p>
+      <!-- MVV カードは非表示中 -->
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="zone zone--ink" id="story">
+    <div class="wrap">
+      <div class="story-top">
+      <div class="z-head ru"><span class="tag">Our Story</span><h2>原体験から生まれた、<span class="hl">3つの挑戦。</span></h2><p>これら3つの領域は、代表自身が培ってきた「属人的な強み」を「再現性のある仕組み」へと昇華・言語化できる確固たるジャンルです。</p></div>
+      <div class="venn-wrap ru">
+        <svg class="venn" viewBox="0 0 600 470" role="img" aria-label="医療×IT・人事・農業の3領域とその重なり">
+          <circle class="vc" cx="225" cy="195" r="150"/>
+          <circle class="vc" cx="375" cy="195" r="150"/>
+          <circle class="vc" cx="300" cy="305" r="150"/>
+          <text class="lab" x="160" y="178" text-anchor="middle">医療 × IT</text>
+          <text class="en" x="160" y="200" text-anchor="middle">HEALTHCARE IT</text>
+          <text class="lab" x="442" y="178" text-anchor="middle">人事</text>
+          <text class="en" x="442" y="200" text-anchor="middle">HUMAN RESOURCES</text>
+          <text class="lab" x="300" y="400" text-anchor="middle">農業・食</text>
+          <text class="en" x="300" y="422" text-anchor="middle">AGRICULTURE</text>
+          <text class="ctr" x="300" y="236" text-anchor="middle">SOUL × SOLAR</text>
+        </svg>
+      </div>
+      </div>
+      <div class="story">
+        <div class="s ru"><div class="n">Healthcare × IT</div><h4>適正な価値と、それ以上の伴走を。</h4><p>医療業界はクローズドな側面が強く、ITやAI導入が進む一方で「適正価格を大幅に超える販売」や「導入後の雑なフォロー」が横行しています。新卒から医療業界に身を置き、人事や集患などあらゆる切り口から現場を見てきたからこそ、「適正な金額での提供」と「適正価格を遥かに超える手厚い伴走」をお約束します。</p></div>
+        <div class="s ru"><div class="n">Human Resources</div><h4>企業の課題に寄り添う「外部人事」として。</h4><p>人材紹介と人事、双方の現場を経験してきたからこそできる支援の形があります。「求職者の意向度や企業理解度の向上」「入社後のオンボーディング・研修」「採用戦略の構築」を活かし、外注人事として企業ごとの課題感に深くコミットします。</p></div>
+        <div class="s ru"><div class="n">Agriculture</div><h4>法人と農業の架け橋に。18歳からの情熱。</h4><p>18歳で経営学部に入学した時から「30歳までに農業に携わる事業を創る」と決意し、「よもぎ」と「米」に強い関心を抱き続けてきました。医療の世界で多くの院長や経営者と話す中、参入ハードルの高い現実に直面。「法人と農業を繋げられるのは自分しかいない」と確信し、長年の情熱を具現化します。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOMAINS -->
+  <section class="zone" id="domains">
+    <div class="wrap">
+      <div class="z-head ru"><span class="tag">Our Services</span><h2>3つの領域で、<span class="hl">現場の課題に挑む。</span></h2></div>
+
+      <!-- IT -->
+      <div class="domain ru">
+        <div class="dhead">
+          <div class="no">01</div>
+          <div><div class="en">Healthcare IT ／ 最重点領域</div><h3>IT事業（医療特化型システム）</h3><p class="dd">医療現場の<b>「底の抜けたバケツ（離職や機会損失）」</b>を塞ぎ、院長をマネジメントの重圧から解放する経営オートメーションシステム。適正価格と、それを遥かに超える手厚い伴走で真の価値を還元します。</p></div>
+        </div>
+        <div class="svc-grid">
+          <div class="tile"><div class="t-no">01 / Medical HRMS</div><h4>医療特化型HRMS<br>メディマネージャー / デンタルマネージャー</h4><div class="cc">組織の定期健診と、明日使える処方箋</div><p>「ケースクエスチョン」で深層心理を可視化し、「明日Aさんにこう声をかけて」という具体的な行動指示を自動生成。院長とスタッフの相性診断に基づく適材適所で、退職による月間85万円の損失リスクを防ぎます。</p><div class="feat"><span>深層心理の可視化</span><span>行動指示の自動生成</span><span>相性診断</span><span>¥85万 損失防止</span></div></div>
+          <div class="tile"><div class="t-no">02 / AI Concierge</div><h4>まごころAIチャット</h4><div class="cc">24時間働くデジタル受付</div><p>HPに常駐し定型質問に即答、現場の電話件数を30〜50%削減。夜間や休診日の問い合わせの取りこぼしをゼロにし、機会損失を防止。患者の「本当のニーズ（検索キーワード）」を可視化し、広告費の漏れを塞ぎます。</p><div class="feat"><span>電話30〜50%削減</span><span>取りこぼしゼロ</span><span>ニーズ可視化</span></div></div>
+          <div class="tile"><div class="t-no">03 / Official LINE</div><h4>LINEメイド</h4><div class="cc">月給1.5万円の電子お手伝いさん</div><p>予約・リマインド・リコール（定期検診案内）・デジタル診察券をLINEで全自動化。【独自】スタッフ専用メニューでの出退勤・シフト管理・業務日報を完結。【独自】訪問歯科の請求書を訪問先から直接ご家族のLINEへ送信。</p><div class="feat"><span>予約/リコール自動化</span><span>シフト・日報</span><span>請求書送信</span></div><a class="more" href="https://linemade.link/lp" target="_blank">VIEW DETAIL →</a></div>
+        </div>
+      </div>
+
+      <!-- HR -->
+      <div class="domain ru">
+        <div class="dhead">
+          <div class="no">02</div>
+          <div><div class="en">Human Resources</div><h3>人事事業（超・伴走型 外部人事）</h3><p class="dd">採用から定着、組織文化の醸成まで、企業の<b>「熱き人事部門」</b>として二人三脚で伴走する完全オーダーメイドの人事支援。</p></div>
+        </div>
+        <div class="svc-grid cols4">
+          <div class="tile"><div class="t-no">01 / Strategy</div><h4>採用計画・戦略立案</h4><p>経営ビジョンや現場課題に基づいた、上流の採用戦略構築。</p></div>
+          <div class="tile"><div class="t-no">02 / Operation</div><h4>運用代行・クロージング</h4><p>媒体運用から面接の実施、候補者の心を動かす「口説き落とし」まで実行。</p></div>
+          <div class="tile"><div class="t-no">03 / Onboarding</div><h4>入社前インターン・研修</h4><p>入社前の助走期間をサポートし、ミスマッチ防止と即戦力化を実現。</p></div>
+          <div class="tile"><div class="t-no">04 / Culture</div><h4>社内イベントの企画運営</h4><p>組織の士気を高める集会や社内イベントのゼロからのプロデュースと進行管理。</p></div>
+        </div>
+      </div>
+
+      <!-- AGRI -->
+      <div class="domain ru">
+        <div class="dhead">
+          <div class="no">03</div>
+          <div><div class="en">Agriculture &amp; Food</div><h3>農業・食事業（次世代農業プロデュース）<span class="soon">準備中</span></h3><p class="dd">医療と農業を繋ぎ、生産者も消費者も豊かになる<b>「新しい食の循環」</b>を創る。</p></div>
+        </div>
+        <div class="svc-grid">
+          <div class="tile"><div class="t-no">01 / Farmer Support</div><h4>農家の包括的支援</h4><p>よもぎ・米農家の環境改善、就労支援を通じた雇用創出。</p></div>
+          <div class="tile"><div class="t-no">02 / Direct Trade</div><h4>加工・ダイレクトトレード</h4><p>中間マージンを排除し、適正価格での卸売で農家の収入を直接向上。</p></div>
+          <div class="tile"><div class="t-no">03 / Product</div><h4>オリジナル商品の開発</h4><p>美容やストレス緩和に効くよもぎ、グルテンフリーのお米など、働く人への「処方箋」となる食の提供。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="zone zone--ink" id="scale">
+    <div class="wrap">
+      <div class="z-head ru"><span class="tag">At a glance</span><h2>数字で見る、<span class="hl">soular。</span></h2></div>
+      <div class="stats">
+        <div class="stat ru"><div class="s-num" data-count="120">0<span class="u">+</span></div><div class="s-lab">導入実績（施設）</div></div>
+        <div class="stat ru"><div class="s-num" data-count="98">0<span class="u">%</span></div><div class="s-lab">継続率</div></div>
+        <div class="stat ru"><div class="s-num" data-count="50">0<span class="u">%減</span></div><div class="s-lab">電話対応 ※AIチャット</div></div>
+        <div class="stat ru"><div class="s-num" data-count="24">0<span class="u">/7</span></div><div class="s-lab">稼働 ※AIチャット</div></div>
+      </div>
+      <p class="stats-note">※ 表示の数値は仮（ダミー）です。確定値が出たら実数に差し替えます。</p>
+    </div>
+  </section>
+
+  <!-- COMPANY -->
+  <section class="zone" id="company" style="background:#e7eeff">
+    <div class="wrap">
+      <div class="z-head ru"><span class="tag">Company</span><h2>会社情報</h2></div>
+      <div class="ctable ru">
+        <div class="crow"><div class="k">会社名</div><div class="v">株式会社soular</div></div>
+        <div class="crow"><div class="k">設立</div><div class="v">2026年3月</div></div>
+        <div class="crow"><div class="k">代表者</div><div class="v">代表取締役　浜田颯流</div></div>
+        <div class="crow"><div class="k">事業内容</div><div class="v">IT事業（医療特化型システムの開発・販売・運用）<br>人事事業（超・伴走型 外部人事支援）<br>農業・食事業（次世代農業プロデュース）</div></div>
+        <div class="crow"><div class="k">所在地</div><div class="v">〒110-0005 東京都台東区上野1丁目17番6号 広小路ビル8F-B</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="start">
+    <div class="shards"><span class="shard s2" style="left:8%;bottom:10%"></span><span class="shard s3" style="right:12%;top:24%"></span></div>
+    <div class="cta-in wrap">
+      <span class="tag">Contact</span>
+      <h2>その課題に、<br>魂を込めて<span class="dot">。</span></h2>
+      <p>医療・人事・農業——どの領域も、まずは現場の声から。お仕事のご依頼・ご相談はお気軽にどうぞ。</p>
+      <div class="hero-actions"><a href="mailto:info@soular-inc.com" class="btn btn-fill">お問い合わせ <span class="arr">→</span></a></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="f-top">
+        <div><div class="brand">soular</div><p class="f-tag">すべての事業に魂（Soul）を宿し、社会を照らす太陽（Solar）となる。株式会社soular。</p></div>
+        <div class="f-cols">
+          <div class="f-col"><h5>Services</h5><a href="#domains">IT事業（医療特化）</a><a href="#domains">人事事業</a><a href="#domains">農業・食事業</a><a href="https://linemade.link/lp" target="_blank">LINEメイド</a></div>
+          <div class="f-col"><h5>Company</h5><a href="#philosophy">理念</a><a href="#story">創業ストーリー</a><a href="#company">会社情報</a><a href="#start">お問い合わせ</a></div>
+        </div>
+      </div>
+      <div class="f-bot"><span>© 2026 SOULAR, INC.</span><span>〒110-0005 東京都台東区上野1-17-6 広小路ビル8F-B</span></div>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  addEventListener('load',function(){requestAnimationFrame(function(){document.body.classList.add('reveal');});});
+  var nav=document.getElementById('nav');
+  addEventListener('scroll',function(){nav.classList.toggle('is-stuck',scrollY>40);},{passive:true});
+  var track=document.getElementById('ticker');if(track){track.innerHTML+=track.innerHTML;}
+  var kw=document.getElementById('kw');var words=['医療現場','クリニック経営','採用','組織づくり','農業','地域'];var wi=0;
+  if(kw&&!reduce){setInterval(function(){kw.classList.add('swap');setTimeout(function(){wi=(wi+1)%words.length;kw.textContent=words[wi];kw.classList.remove('swap');},230);},2200);}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;e.target.classList.add('in');if(e.target.classList.contains('stat'))countUp(e.target.querySelector('.s-num'));io.unobserve(e.target);});},{threshold:0.16});
+  document.querySelectorAll('.ru').forEach(function(el){io.observe(el);});
+  function countUp(el){if(!el)return;var target=parseFloat(el.getAttribute('data-count'))||0;var unitEl=el.querySelector('.u');var unit=unitEl?unitEl.outerHTML:'';if(reduce){el.innerHTML=target+unit;return;}var s=performance.now(),dur=1200;function f(now){var p=Math.min((now-s)/dur,1);var e=1-Math.pow(1-p,3);el.innerHTML=Math.floor(e*target)+unit;if(p<1)requestAnimationFrame(f);}requestAnimationFrame(f);}
+})();
+</script>
+</body>
+</html>
