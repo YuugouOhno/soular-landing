@@ -4,10 +4,11 @@ const css = `
   :root{
     --paper:#eef3ff; --card:#ffffff; --ink:#0a1330; --ink-soft:#4e5a7e; --line:#d4ddf2;
     --blue:#1f6dff; --blue-deep:#0a2a7a; --blue-tint:#4d86ff; --accent:#4d86ff;
-    --offwhite:#f4f7ff; --maxw:1240px; --ease:cubic-bezier(.19,1,.22,1);
+    --offwhite:#f4f7ff; --sage:#e9efdf; --maxw:1240px; --ease:cubic-bezier(.19,1,.22,1);
   }
   .soular-new *{box-sizing:border-box;margin:0;padding:0}
   body:has(.soular-new){background:var(--paper);color:var(--ink);overflow-x:hidden}
+  body:has(.nav-drawer.is-open){overflow:hidden}
   .soular-new{background:var(--paper);color:var(--ink);font-family:"Murecho","Schibsted Grotesk",system-ui,sans-serif;font-weight:400;line-height:1.8;-webkit-font-smoothing:antialiased}
   .soular-new :where(h1,h2,h3,h4){word-break:keep-all;overflow-wrap:anywhere}
   .soular-new ::selection{background:var(--blue);color:#fff}
@@ -27,7 +28,19 @@ const css = `
   .soular-new .nav.is-stuck .nav-cta:hover{background:var(--ink);color:var(--paper)}
   .soular-new .nav:not(.is-stuck) .nav-cta:hover{background:var(--offwhite);color:var(--blue)}
   @media(max-width:980px){.soular-new .nav-links a:not(.nav-cta){display:none}}
-  @media(max-width:900px){.soular-new .nav{display:none}.soular-new .hero{padding-top:64px}}
+  .soular-new .nav-burger{display:none;width:42px;height:42px;border:none;background:transparent;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0;z-index:62;color:inherit}
+  .soular-new .nav-burger span{display:block;width:24px;height:2px;background:currentColor;border-radius:2px;transition:transform .35s var(--ease),opacity .25s var(--ease)}
+  .soular-new .nav-burger.is-open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+  .soular-new .nav-burger.is-open span:nth-child(2){opacity:0}
+  .soular-new .nav-burger.is-open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+  .soular-new .nav-drawer{position:fixed;inset:0;z-index:59;background:rgba(10,19,48,.5);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s var(--ease)}
+  .soular-new .nav-drawer.is-open{opacity:1;visibility:visible}
+  .soular-new .nav-drawer-panel{position:absolute;top:0;right:0;height:100%;width:min(78vw,320px);background:var(--paper);box-shadow:-20px 0 60px -30px rgba(10,19,48,.6);display:flex;flex-direction:column;gap:4px;padding:96px 28px 40px;transform:translateX(100%);transition:transform .4s var(--ease)}
+  .soular-new .nav-drawer.is-open .nav-drawer-panel{transform:translateX(0)}
+  .soular-new .nav-drawer-panel a{font-family:"Murecho",sans-serif;font-weight:700;font-size:16px;color:var(--ink);padding:15px 8px;border-bottom:1px solid var(--line);transition:color .2s}
+  .soular-new .nav-drawer-panel a:hover{color:var(--blue)}
+  .soular-new .nav-drawer-cta{margin-top:18px;border:none;background:var(--blue);color:#fff!important;text-align:center;border-radius:100px;padding:15px 8px!important;border-bottom:none!important}
+  @media(max-width:900px){.soular-new .nav-links{display:none}.soular-new .nav-burger{display:flex}.soular-new .hero{padding-top:84px}}
 
   .soular-new .hero{background:var(--blue);color:var(--offwhite);position:relative;overflow:hidden;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:118px 0 80px}
   .soular-new .shards{position:absolute;inset:0;z-index:0;pointer-events:none}
@@ -48,7 +61,7 @@ const css = `
   .soular-new .hero h1 .ln:nth-child(3) > span{transition-delay:.2s}
   .soular-new.reveal .hero h1 .ln > span{transform:translateY(0)}
   .soular-new .hero h1 .dot{color:#fff}
-  .soular-new .kw-line{display:inline-flex;align-items:baseline;flex-wrap:wrap;font-family:"DM Mono",monospace;font-size:clamp(15px,2.1vw,24px);color:var(--offwhite);margin-bottom:36px;background:rgba(0,0,0,.18);padding:12px 18px;border-radius:10px;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .55s}
+  .soular-new .kw-line{display:inline-flex;align-items:baseline;flex-wrap:wrap;font-family:"DM Mono",monospace;font-size:clamp(20px,3vw,34px);color:var(--offwhite);margin-bottom:36px;background:rgba(0,0,0,.18);padding:16px 24px;border-radius:12px;opacity:0;transform:translateY(16px);transition:all .8s var(--ease) .55s}
   .soular-new .kw-line .pr{opacity:.6;margin-right:6px}
   .soular-new .kw-wrap{display:inline-block;min-width:1ch}
   .soular-new .kw{display:inline-block;color:#fff;font-weight:500;transition:opacity .22s var(--ease),transform .22s var(--ease)}
@@ -135,9 +148,19 @@ const css = `
   .soular-new .feat span{font-size:11px;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:4px 10px}
   .soular-new .tile .more{margin-top:14px;font-family:"DM Mono",monospace;font-size:12px;color:var(--blue);display:inline-flex;gap:6px}
   .soular-new .tile:hover .more{color:#fff}
+  .soular-new .tile .more-row{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  .soular-new .tile .more-row .more{margin-top:0}
   .soular-new .tile-thumb{margin:-30px -28px 20px;aspect-ratio:1/1;overflow:hidden;background:#eef3ff;border-bottom:1px solid var(--line)}
   .soular-new .tile-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
   .soular-new .tile:hover .tile-thumb img{transform:scale(1.05)}
+
+  .soular-new .svc-grid.scroll-x{display:flex;overflow-x:auto;gap:18px;padding-bottom:14px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--blue-tint) transparent}
+  .soular-new .svc-grid.scroll-x .tile{flex:0 0 calc((100% - 104px) / 3);scroll-snap-align:start}
+  .soular-new .svc-grid.scroll-x::-webkit-scrollbar{height:8px}
+  .soular-new .svc-grid.scroll-x::-webkit-scrollbar-thumb{background:var(--blue-tint);border-radius:100px}
+  .soular-new .svc-grid.scroll-x::-webkit-scrollbar-track{background:transparent}
+  @media(max-width:980px){.soular-new .svc-grid.scroll-x .tile{flex:0 0 calc((100% - 18px) / 2)}}
+  @media(max-width:640px){.soular-new .svc-grid.scroll-x .tile{flex:0 0 82%}}
 
   .soular-new .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
   @media(max-width:880px){.soular-new .stats{grid-template-columns:1fr 1fr;gap:32px 24px}}
@@ -211,7 +234,7 @@ const css = `
   .soular-new .f-bot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #232a44;padding-top:26px;flex-wrap:wrap;gap:14px}
   .soular-new .f-bot span{font-family:"DM Mono",monospace;font-size:11.5px;color:#6a7390}
 
-  @media(max-width:560px){.soular-new .wrap{padding:0 22px}.soular-new .nav{padding:16px 22px}.soular-new .zone{padding:84px 0}.soular-new .kw-line{font-size:14px}.soular-new .dhead{flex-direction:column;gap:8px}}
+  @media(max-width:560px){.soular-new .wrap{padding:0 22px}.soular-new .nav{padding:16px 22px}.soular-new .zone{padding:84px 0}.soular-new .kw-line{font-size:18px;padding:12px 16px}.soular-new .dhead{flex-direction:column;gap:8px}}
   @media (prefers-reduced-motion:reduce){.soular-new *{animation:none!important;transition-duration:.001ms!important}.soular-new .hero h1 .ln > span{transform:none}.soular-new .hero .tag,.soular-new .kw-line,.soular-new .hero-sub,.soular-new .hero-actions{opacity:1;transform:none}.soular-new .ru{opacity:1;transform:none}.soular-new .tile::before{display:none}}
   .soular-new :focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 `
@@ -251,6 +274,7 @@ export default function SoularLanding() {
   const [slide, setSlide] = useState(0)
   const [paused, setPaused] = useState(false)
   const [stripH, setStripH] = useState()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     if (paused) return
@@ -369,7 +393,30 @@ export default function SoularLanding() {
           <a href="#company">会社情報</a>
           <a href="#start" className="nav-cta">お問い合わせ</a>
         </div>
+        <button
+          type="button"
+          className={`nav-burger${menuOpen ? ' is-open' : ''}`}
+          aria-label="メニューを開く"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span /><span /><span />
+        </button>
       </nav>
+
+      <div
+        className={`nav-drawer${menuOpen ? ' is-open' : ''}`}
+        onClick={() => setMenuOpen(false)}
+      >
+        <div className="nav-drawer-panel" onClick={(e) => e.stopPropagation()}>
+          <a href="#philosophy" onClick={() => setMenuOpen(false)}>理念</a>
+          <a href="#story" onClick={() => setMenuOpen(false)}>創業</a>
+          <a href="#domains" onClick={() => setMenuOpen(false)}>事業領域</a>
+          <a href="#topics" onClick={() => setMenuOpen(false)}>実績</a>
+          <a href="#company" onClick={() => setMenuOpen(false)}>会社情報</a>
+          <a href="#start" className="nav-drawer-cta" onClick={() => setMenuOpen(false)}>お問い合わせ</a>
+        </div>
+      </div>
 
       <header className="hero">
         <div className="hero-grid" />
@@ -415,7 +462,7 @@ export default function SoularLanding() {
       </section>
 
       {/* TOPICS / RECENT WORK */}
-      <section className="zone" id="topics" style={{ background: '#e7eeff' }}>
+      <section className="zone" id="topics" style={{ background: 'var(--sage)' }}>
         <div className="wrap">
           <div className="z-head center ru"><span className="tag">Topics</span><h2>Recent <span className="hl">Work.</span></h2></div>
           <div className="topic-show ru" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
@@ -482,7 +529,7 @@ export default function SoularLanding() {
       </section>
 
       {/* DOMAINS */}
-      <section className="zone" id="domains">
+      <section className="zone" id="domains" style={{ background: 'var(--sage)' }}>
         <div className="wrap">
           <div className="z-head ru"><span className="tag">Our Services</span><h2>3つの領域で、<span className="hl">現場の課題に挑む。</span></h2></div>
 
@@ -491,10 +538,11 @@ export default function SoularLanding() {
               <div className="no">01</div>
               <div><div className="en">Healthcare IT ／ 最重点領域</div><h3>IT事業（医療特化型システム）</h3><p className="dd">医療現場の<b>「底の抜けたバケツ（離職や機会損失）」</b>を塞ぎ、院長をマネジメントの重圧から解放する経営オートメーションシステム。適正価格と、それを遥かに超える手厚い伴走で真の価値を還元します。</p></div>
             </div>
-            <div className="svc-grid">
-              <div className="tile"><div className="tile-thumb"><img src="/hrms.png" alt="医療特化型HRMSのイメージ" loading="lazy" /></div><div className="t-no">01 / Medical HRMS</div><h4>医療特化型HRMS<br />メディマネージャー / デンタルマネージャー</h4><div className="cc">組織の定期健診と、明日使える処方箋</div><p>「ケースクエスチョン」で深層心理を可視化し、「明日Aさんにこう声をかけて」という具体的な行動指示を自動生成。院長とスタッフの相性診断に基づく適材適所で、離職を防ぎ、組織の定着を支えます。</p></div>
-              <div className="tile"><div className="tile-thumb"><img src="/magokoro-ai.png" alt="まごころAIチャットのイメージ" loading="lazy" /></div><div className="t-no">02 / AI Concierge</div><h4>まごころAIチャット</h4><div className="cc">24時間働くデジタル受付</div><p>HPに常駐し定型質問へ即答し、現場の電話対応を軽減。夜間や休診日の問い合わせの取りこぼしを防ぎ、機会損失を抑制。患者の「本当のニーズ（検索キーワード）」を可視化し、広告費の無駄を抑えます。</p></div>
-              <div className="tile"><div className="tile-thumb"><img src="/linemade-square.png" alt="LINEメイドのイメージ" loading="lazy" /></div><div className="t-no">03 / Official LINE</div><h4>LINEメイド</h4><div className="cc">月給1.5万円の電子お手伝いさん</div><p>予約・リマインド・リコール（定期検診案内）・デジタル診察券をLINEで全自動化。【独自】スタッフ専用メニューでの出退勤・シフト管理・業務日報を完結。【独自】訪問歯科の請求書を訪問先から直接ご家族のLINEへ送信。</p><a className="more" href="https://linemade.link/lp" target="_blank" rel="noreferrer">VIEW DETAIL →</a></div>
+            <div className="svc-grid scroll-x">
+              <div className="tile"><div className="tile-thumb"><img src="/hrms.png" alt="医療特化型HRMSのイメージ" loading="lazy" /></div><div className="t-no">01 / Medical HRMS</div><h4>医療特化型HRMS<br />メディマネージャー / デンタルマネージャー</h4><div className="cc">組織の定期健診と、明日使える処方箋</div><p>「ケースクエスチョン」で深層心理を可視化し、「明日Aさんにこう声をかけて」という具体的な行動指示を自動生成。院長とスタッフの相性診断に基づく適材適所で、離職を防ぎ、組織の定着を支えます。</p><div className="more-row"><a className="more" href="https://soular-hrms.com/medical/lp" target="_blank" rel="noreferrer">医科版 →</a><a className="more" href="https://soular-hrms.com/dental/lp" target="_blank" rel="noreferrer">歯科版 →</a></div></div>
+              <div className="tile"><div className="tile-thumb"><img src="/doubutsu-shindan.png" alt="医科・歯科 動物タイプ診断のイメージ" loading="lazy" /></div><div className="t-no">02 / Type Diagnosis</div><h4>医科・歯科 動物タイプ診断</h4><div className="cc">一般向け 無料の相性診断</div><p>6つの質問に答えるだけで、あなたの「動物タイプ」と強み・相性がわかる無料の診断サービス。院内のスタッフ同士はもちろん、患者さんやご家族とのコミュニケーションのきっかけにもどうぞ。</p><div className="more-row"><a className="more" href="https://soular-hrms.com/medical" target="_blank" rel="noreferrer">医科版で診断 →</a><a className="more" href="https://soular-hrms.com/dental" target="_blank" rel="noreferrer">歯科版で診断 →</a></div></div>
+              <div className="tile"><div className="tile-thumb"><img src="/magokoro-ai.png" alt="まごころAIチャットのイメージ" loading="lazy" /></div><div className="t-no">03 / AI Concierge</div><h4>まごころAIチャット</h4><div className="cc">24時間働くデジタル受付</div><p>HPに常駐し定型質問へ即答し、現場の電話対応を軽減。夜間や休診日の問い合わせの取りこぼしを防ぎ、機会損失を抑制。患者の「本当のニーズ（検索キーワード）」を可視化し、広告費の無駄を抑えます。</p><a className="more" href="https://magokoro-ai.com/" target="_blank" rel="noreferrer">VIEW DETAIL →</a></div>
+              <div className="tile"><div className="tile-thumb"><img src="/linemade-square.png" alt="LINEメイドのイメージ" loading="lazy" /></div><div className="t-no">04 / Official LINE</div><h4>LINEメイド</h4><div className="cc">月給1.5万円の電子お手伝いさん</div><p>予約・リマインド・リコール（定期検診案内）・デジタル診察券をLINEで全自動化。【独自】スタッフ専用メニューでの出退勤・シフト管理・業務日報を完結。【独自】訪問歯科の請求書を訪問先から直接ご家族のLINEへ送信。</p><a className="more" href="https://linemade.link/lp" target="_blank" rel="noreferrer">VIEW DETAIL →</a></div>
             </div>
           </div>
 
@@ -540,7 +588,7 @@ export default function SoularLanding() {
       </section>
 
       {/* COMPANY */}
-      <section className="zone" id="company" style={{ background: '#e7eeff' }}>
+      <section className="zone" id="company" style={{ background: 'var(--sage)' }}>
         <div className="wrap">
           <div className="z-head ru"><span className="tag">Company</span><h2>会社情報</h2></div>
           <div className="ctable ru">
