@@ -220,8 +220,12 @@ const css = `
   .soular-new .cta .tag{color:var(--offwhite);margin-bottom:26px}
   .soular-new .cta h2{font-family:"Murecho";font-weight:900;font-size:clamp(34px,6vw,80px);line-height:1.1;letter-spacing:-.025em;margin-bottom:22px}
   .soular-new .cta h2 .dot{color:#fff}
-  .soular-new .cta p{color:#dbe6ff;max-width:480px;margin:0 auto 38px;font-size:16px}
+  .soular-new .cta p{color:#dbe6ff;max-width:480px;margin:0 auto 32px;font-size:16px}
   .soular-new .cta .hero-actions{justify-content:center;opacity:1;transform:none}
+  .soular-new .cta-mail{display:inline-grid;gap:6px;justify-items:center;margin:0 auto 30px;padding:16px 26px;background:rgba(255,255,255,.1);border:1px solid rgba(244,247,255,.28);border-radius:14px}
+  .soular-new .cta-mail .lab{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c2d2ff}
+  .soular-new .cta-mail a{font-size:clamp(16px,2.2vw,20px);font-weight:700;color:#fff;letter-spacing:.01em;word-break:break-all;transition:opacity .2s}
+  .soular-new .cta-mail a:hover{opacity:.82;text-decoration:underline;text-underline-offset:3px}
 
   .soular-new .footer{background:var(--ink);color:var(--offwhite);padding:72px 0 44px}
   .soular-new .f-top{display:flex;justify-content:space-between;gap:48px;flex-wrap:wrap;margin-bottom:56px}
@@ -608,7 +612,11 @@ export default function SoularLanding() {
           <span className="tag">Contact</span>
           <h2>その課題に、<br />魂を込めて<span className="dot">。</span></h2>
           <p>医療・人事・農業——どの領域も、まずは現場の声から。お仕事のご依頼・ご相談はお気軽にどうぞ。</p>
-          <div className="hero-actions"><a href="mailto:info@soular-inc.com" className="btn btn-fill">お問い合わせ <span className="arr">→</span></a></div>
+          <div className="cta-mail">
+            <span className="lab">メールアドレス</span>
+            <a href="mailto:s-hamada@soular-inc.com">s-hamada@soular-inc.com</a>
+          </div>
+          <div className="hero-actions"><a href="mailto:s-hamada@soular-inc.com" className="btn btn-fill">メールで問い合わせる <span className="arr">→</span></a></div>
         </div>
       </section>
 
