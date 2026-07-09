@@ -637,7 +637,7 @@ export default function SoularLanding() {
           <ContactForm />
           <div className="cta-mail">
             <span className="lab">メールで直接送る場合はこちら</span>
-            <a href="mailto:s-hamada@soular-inc.com">s-hamada@soular-inc.com</a>
+            <ObfuscatedMail />
           </div>
         </div>
       </section>
@@ -656,6 +656,15 @@ export default function SoularLanding() {
       </footer>
     </div>
   )
+}
+
+// メールアドレスを平文でソースに残さず、実行時に base64 復号して表示する（bot のアドレス収集対策）。
+function ObfuscatedMail() {
+  const [addr] = useState(() => {
+    try { return atob('cy1oYW1hZGFAc291bGFyLWluYy5jb20=') } catch { return '' }
+  })
+  if (!addr) return null
+  return <a href={`mailto:${addr}`}>{addr}</a>
 }
 
 function ContactForm() {
