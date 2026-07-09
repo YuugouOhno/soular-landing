@@ -1,8 +1,17 @@
 {
   "name": "soular-landing",
+  "main": "worker/index.ts",
   "compatibility_date": "2025-12-03",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
+  },
+  // 非機密の差出人設定（3サイト共通の Resend 差出人に揃える）。
+  // RESEND_API_KEY は機密なので vars ではなく secret で設定すること:
+  //   npx wrangler secret put RESEND_API_KEY
+  "vars": {
+    "RESEND_FROM_EMAIL": "noreply@soular-inc.com",
+    "RESEND_FROM_NAME": "soular"
   }
 }

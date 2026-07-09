@@ -227,6 +227,28 @@ const css = `
   .soular-new .cta-mail a{font-size:clamp(16px,2.2vw,20px);font-weight:700;color:#fff;letter-spacing:.01em;word-break:break-all;transition:opacity .2s}
   .soular-new .cta-mail a:hover{opacity:.82;text-decoration:underline;text-underline-offset:3px}
 
+  .soular-new .cf{display:grid;gap:14px;max-width:520px;margin:0 auto 30px;text-align:left}
+  .soular-new .cf-row{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+  @media(max-width:560px){.soular-new .cf-row{grid-template-columns:1fr}}
+  .soular-new .cf-field{display:grid;gap:6px}
+  .soular-new .cf-field label{font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#c2d2ff}
+  .soular-new .cf-field label .req{color:#fff}
+  .soular-new .cf input,.soular-new .cf textarea{width:100%;padding:12px 14px;font-family:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(244,247,255,.28);border-radius:12px;outline:none;transition:border-color .2s,background .2s}
+  .soular-new .cf input::placeholder,.soular-new .cf textarea::placeholder{color:rgba(244,247,255,.5)}
+  .soular-new .cf input:focus,.soular-new .cf textarea:focus{border-color:#fff;background:rgba(255,255,255,.14)}
+  .soular-new .cf textarea{resize:vertical;min-height:96px}
+  .soular-new .cf-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .soular-new .cf-agree{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.7;color:#dbe6ff}
+  .soular-new .cf-agree a{color:#fff;text-decoration:underline;text-underline-offset:2px}
+  .soular-new .cf-submit{justify-self:start;background:var(--offwhite);color:var(--blue);border:none;font-family:"DM Mono",monospace;font-size:14px;font-weight:500;padding:14px 28px;border-radius:100px;cursor:pointer;transition:all .3s var(--ease)}
+  .soular-new .cf-submit:hover:not(:disabled){background:#fff;color:var(--blue-deep);transform:translateY(-2px)}
+  .soular-new .cf-submit:disabled{opacity:.6;cursor:not-allowed}
+  .soular-new .cf-note{font-size:13px;line-height:1.7}
+  .soular-new .cf-note.err{color:#ffd9d4}
+  .soular-new .cf-done{padding:26px 24px;background:rgba(255,255,255,.12);border:1px solid rgba(244,247,255,.35);border-radius:16px;max-width:520px;margin:0 auto 30px;text-align:center}
+  .soular-new .cf-done strong{display:block;font-size:16px;margin-bottom:6px;color:#fff}
+  .soular-new .cf-done span{font-size:13.5px;line-height:1.8;color:#dbe6ff}
+
   .soular-new .footer{background:var(--ink);color:var(--offwhite);padding:72px 0 44px}
   .soular-new .f-top{display:flex;justify-content:space-between;gap:48px;flex-wrap:wrap;margin-bottom:56px}
   .soular-new .footer .brand{font-size:24px;margin-bottom:14px}
@@ -612,11 +634,11 @@ export default function SoularLanding() {
           <span className="tag">Contact</span>
           <h2>その課題に、<br />魂を込めて<span className="dot">。</span></h2>
           <p>医療・人事・農業——どの領域も、まずは現場の声から。お仕事のご依頼・ご相談はお気軽にどうぞ。</p>
+          <ContactForm />
           <div className="cta-mail">
-            <span className="lab">メールアドレス</span>
+            <span className="lab">メールで直接送る場合はこちら</span>
             <a href="mailto:s-hamada@soular-inc.com">s-hamada@soular-inc.com</a>
           </div>
-          <div className="hero-actions"><a href="mailto:s-hamada@soular-inc.com" className="btn btn-fill">メールで問い合わせる <span className="arr">→</span></a></div>
         </div>
       </section>
 
@@ -633,5 +655,88 @@ export default function SoularLanding() {
         </div>
       </footer>
     </div>
+  )
+}
+
+function ContactForm() {
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (status !== 'idle' && status !== 'error') return
+    setStatus('sending')
+
+    const fd = new FormData(e.currentTarget)
+    const body = {
+      company: fd.get('company') || '',
+      name: fd.get('name') || '',
+      email: fd.get('email') || '',
+      phone: fd.get('phone') || '',
+      message: fd.get('message') || '',
+      _hp: fd.get('_hp') || '', // honeypot
+    }
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      setStatus(res.ok ? 'sent' : 'error')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  if (status === 'sent') {
+    return (
+      <div className="cf-done">
+        <strong>お問い合わせを受け付けました</strong>
+        <span>ご連絡ありがとうございます。内容を確認のうえ、担当者よりご返信いたします。</span>
+      </div>
+    )
+  }
+
+  const disabled = status === 'sending'
+
+  return (
+    <form className="cf" onSubmit={handleSubmit}>
+      {/* honeypot: 人間には見えない。bot が埋めたら破棄される */}
+      <input className="cf-hp" type="text" name="_hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+
+      <div className="cf-field">
+        <label htmlFor="cf-company">会社・お名前など</label>
+        <input id="cf-company" name="company" type="text" disabled={disabled} placeholder="株式会社〇〇" />
+      </div>
+
+      <div className="cf-row">
+        <div className="cf-field">
+          <label htmlFor="cf-name">お名前 <span className="req">*</span></label>
+          <input id="cf-name" name="name" type="text" required disabled={disabled} placeholder="山田 太郎" />
+        </div>
+        <div className="cf-field">
+          <label htmlFor="cf-phone">電話番号</label>
+          <input id="cf-phone" name="phone" type="tel" disabled={disabled} placeholder="03-0000-0000" />
+        </div>
+      </div>
+
+      <div className="cf-field">
+        <label htmlFor="cf-email">メールアドレス <span className="req">*</span></label>
+        <input id="cf-email" name="email" type="email" required disabled={disabled} placeholder="example@example.com" />
+      </div>
+
+      <div className="cf-field">
+        <label htmlFor="cf-message">お問い合わせ内容 <span className="req">*</span></label>
+        <textarea id="cf-message" name="message" rows={4} required disabled={disabled} placeholder="ご依頼・ご相談の内容をお気軽にご記入ください。" />
+      </div>
+
+      {status === 'error' && (
+        <div className="cf-note err">送信に失敗しました。お手数ですが時間をおいて再度お試しいただくか、下記メール宛にご連絡ください。</div>
+      )}
+
+      <button className="cf-submit" type="submit" disabled={disabled}>
+        {disabled ? '送信中…' : '送信する →'}
+      </button>
+    </form>
   )
 }
