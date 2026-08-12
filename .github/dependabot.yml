@@ -1,0 +1,23 @@
+# Dependabot: 脆弱性アラート + 週次の依存更新 PR。
+# dev-dep-audit スキルと役割が違う:
+#   Dependabot = 機械的に検知して PR を投げる常時稼働の網
+#   dev-dep-audit = まとめて判断・検証して 1 本の PR にする棚卸し
+# 併用してよい（重複した PR は棚卸し側でクローズする）。
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      # 個別 PR が乱立しないよう、非破壊的な更新はまとめる
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    labels: ["dependencies"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels: ["dependencies"]
