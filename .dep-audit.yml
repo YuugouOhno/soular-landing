@@ -1,0 +1,65 @@
+# 依存監査の方針（dev-dep-audit スキルが読む）
+# 置き場所: リポジトリ直下の .dep-audit.yml
+# 全項目が任意。無ければスキル側の既定値で動く。
+version: 1
+
+# このファイルが存在すること自体が「日次ドレインの対象にする」という opt-in。
+# tools/dep-audit/run.sh は .dep-audit.yml を持つリポジトリだけを処理する。
+
+policy:
+  # 自動で上げてよい bump 種別。ここから外れたものは PR に載せず「要検討」として報告する。
+  # 0.x 系は minor でも破壊的とみなし major 扱いになる。
+  allow: [patch, minor, major]
+  # true なら allow の範囲外でも、脆弱性が絡む更新は必ず上げる。
+  security_always: true
+
+# Dependabot PR のマージ条件（drain.py が使う）。
+# ここに載らないもの（major / 脆弱性 / CI レッド）は AI の個別レビューへ回る。
+#
+# 注意: この条件を満たしても即マージはされない。
+# 実際にマージされるのは「LLM が確認して番号を渡した PR」だけ（二重の鍵）。
+# LLM は候補から外せるが、追加はできない。
+automerge:
+  enabled: true
+  # 自動マージを許す bump。major は意図的に入れない（人と AI がレビューする）。
+  allow: [patch, minor]
+  # CI が無い、または未完了のリポジトリではマージしない。
+  # false にすると検証シグナル無しでマージされる。CI を入れるまでは true のままにすること。
+  require_ci: true
+  # 1 回の実行でマージする上限。暴走時の被害を抑える。
+  max_per_run: 10
+  method: squash
+
+# escalate（major / 脆弱性 / CI レッド）の個別レビュー。
+# **1 PR = 1 セッション**で処理される。まとめて渡すとレビューが必ず省略されるため。
+review:
+  # 1 回の実行でレビューする件数の上限。残りは翌日に繰り越す。
+  # 大きくすると「22 件を一気に」という圧力が生まれて手抜きの原因になる。
+  max_per_run: 5
+
+# 触ってほしくない依存。name はグロブ（*）可。
+ignore: []
+# 例:
+# ignore:
+#   - name: "react"
+#     reason: "Next.js のピア依存に合わせて固定"
+#   - name: "@types/node"
+#     versions: ">=26"
+#     reason: "実行環境が Node 22 のため"
+
+# 更新後の検証。steps を省略すると package.json の scripts から
+# typecheck / lint / build / test を自動検出する。
+verify:
+  install: "npm install"
+  steps: ["npm run lint", "npm run build"]
+  # 1 ステップあたりの上限（秒）。重いビルドがあるなら伸ばす。
+  timeout: 900
+
+pr:
+  base: main
+  branch_prefix: chore/deps
+  # 脆弱性修正と通常更新で PR を分ける（既定 true）
+  split_security: true
+  labels: [dependencies]
+  reviewers: []
+  draft: false
