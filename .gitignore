@@ -28,3 +28,7 @@ dist-ssr
 /out/
 next-env.d.ts
 .vercel
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+*.tsbuildinfo
