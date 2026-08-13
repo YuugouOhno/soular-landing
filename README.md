@@ -1,6 +1,6 @@
 # soular-landing
 
-株式会社soular のコーポレートサイト（https://soular.co.jp/）。
+株式会社soular のコーポレートサイト（https://soular-inc.com/）。
 
 Next.js (App Router) + TypeScript。**Vite SPA + Cloudflare Workers からの移行中**で、
 移行の設計と手順は [`docs/nextjs-migration-design.md`](docs/nextjs-migration-design.md) にある。

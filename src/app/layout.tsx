@@ -2,15 +2,21 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
 
-// 移行前 index.html の <head> をそのまま移設したもの。
-// title / description / canonical / OG / Twitter / JSON-LD は SEO に直結するため、
-// 移行で内容を変えないこと（検証は baseline との diff で行う）。
+// 移行前 index.html の <head> を移設したもの。
+// title / description / OG / Twitter / JSON-LD は SEO に直結するため、内容を勝手に変えないこと。
+//
+// ただしドメインだけは意図的に変更している。移行前は canonical / og:url / JSON-LD が
+// すべて soular.co.jp を指していたが、このドメインは未登録で名前解決しない（whois: No match）。
+// 存在しないURLを正規URLとして宣言している状態だったため、稼働実体である
+// soular-inc.com に揃えた（2026-08-13 判断）。
+//
+// ⚠️ og-image.png は public/ に存在しない（移行前から 404）。OG 画像は別途用意が必要。
 
-const SITE_URL = "https://soular.co.jp/";
+const SITE_URL = "https://soular-inc.com/";
 const DESCRIPTION =
   "株式会社Soularは、LINE運用ツール開発、人事・集客支援、農業推進を軸に、魂を込めた価値創造に挑む企業です。本質を見極め、地域と企業の未来を照らし、独自性と共創で社会に新たな光をもたらします。";
 const OG_TITLE = "株式会社soular | システム開発・DX支援・デジタルマーケティング";
-const OG_IMAGE = "https://soular.co.jp/og-image.png";
+const OG_IMAGE = "https://soular-inc.com/og-image.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -49,7 +55,7 @@ const JSON_LD = {
   name: "株式会社soular",
   alternateName: ["soular", "ソウラー"],
   url: SITE_URL,
-  logo: "https://soular.co.jp/favicon.svg",
+  logo: "https://soular-inc.com/favicon.svg",
   description: DESCRIPTION,
   founder: { "@type": "Person", name: "浜田颯流", alternateName: "颯流" },
   foundingDate: "2025",

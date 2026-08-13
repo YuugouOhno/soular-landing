@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://soular.co.jp/sitemap.xml
+Sitemap: https://soular-inc.com/sitemap.xml
