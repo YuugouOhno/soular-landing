@@ -59,15 +59,31 @@
 **すべて未登録の `soular.co.jp` に向けている**。検索エンジンに「正規URLは存在しないドメイン」と
 宣言している状態で、実害のある SEO バグ。移行時にどう扱うかの判断が必要（第7章）。
 
-### 未確認（Cloudflare ダッシュボードで要確認）
+### Cloudflare 側の構成（2026-08-13・API で実測確認済み）
 
-`wrangler` の認証が切れており（`Not logged in. Your auth token has expired`）CLI から確認できなかった。
-`wrangler login` 後、または Cloudflare ダッシュボードで確認すること。
+| 項目 | 実測結果 |
+|---|---|
+| Cloudflare アカウント | `yuugou.purple@gmail.com`（Account ID `d7d189ab…`） |
+| ゾーン | `soular-inc.com` — status `active` / Free プラン |
+| ネームサーバー | `randall.ns.cloudflare.com` / `uma.ns.cloudflare.com`（**Cloudflare が権威 DNS**） |
+| Worker | `soular-landing`（他に `relu-branch-hp` / `yuugou-portfolio` が同アカウントに存在） |
+| **紐付け方式** | **Custom Domain**。`soular-inc.com` と `www.soular-inc.com` の**両方**が Worker に紐付く |
+| Worker Routes | **なし**（`/zones/{id}/workers/routes` が空） |
 
-- `soular-inc.com` の DNS レコードと **TTL**
-- Proxied（オレンジ雲）か DNS-only（グレー雲）か
-- **Worker とドメインの結び付き方**（Custom Domain か Route か）← 切替手順が変わるので最重要
-- `www` の有無とリダイレクト方針
+**→ 切替手順は「Custom Domain 版」で確定。** Route が無いので、エッジでの横取りを心配する必要はなく、
+Custom Domain を2つ外せばホスト名が解放される。
+
+**www も対象**である点に注意（apex だけ切り替えると www が切替後に行き先を失う）。
+
+#### DNS レコードだけ未取得
+
+`wrangler login` の OAuth トークンには `zone:dns:read` が含まれず、DNS レコードの取得は
+`Authentication error` になった（ゾーンのメタ情報は取得可）。現行の TTL・レコード内容は
+**Cloudflare ダッシュボードで目視確認**するか、`Zone:DNS:Edit` 権限のスコープ付き API トークンを
+別途発行すること。
+
+なお Custom Domain 方式では対象レコードは Cloudflare/Workers が自動生成・管理する proxied レコードで、
+Custom Domain を削除すると一緒に消える。
 
 ---
 
@@ -173,17 +189,46 @@ Vercel にプロジェクトを作り、**プレビューURL**（`*.vercel.app`�
 > - **Route**（`soular-inc.com/*` 等）の場合、DNS が Vercel を指していても
 >   **エッジで先に Worker が横取りする**ため、そもそも Vercel に到達しない。
 
-1. **先に** Vercel 側へドメインを追加する（`vercel domains add soular-inc.com`）。
-   ドメイン未追加のまま DNS を向けると証明書が発行できない（既知の落とし穴）。
+実測にもとづく確定手順（Custom Domain 方式・apex と www の2本）。
+
+**事前（切替の数時間〜1日前）**
+
+- 現行 DNS の TTL を確認し、下げられるなら 300 秒程度にしておく（ロールバックを速くするため）
+
+**当日**
+
+1. **Vercel にドメインを追加**（先にやる。未追加のまま DNS を向けると証明書が発行できない）
+   ```bash
+   vercel domains add soular-inc.com
+   vercel domains add www.soular-inc.com
+   ```
    この時点では `misconfigured` 表示で正常。
-2. Cloudflare で **Worker の Custom Domain / Route から `soular-inc.com` を外す**。
-   Workers & Pages → 該当 Worker → Settings → Domains & Routes。**Worker 自体は消さない。**
-3. Cloudflare DNS を Vercel に向ける。
-   - DNS-only（グレー雲）の場合: apex は **A `76.76.21.21`**、www は **CNAME `cname.vercel-dns.com`**
-   - Proxied（オレンジ雲）を維持する場合: **SSL/TLS を必ず Full (strict)** に。
-     これを忘れるとリダイレクトループになる
-4. `vercel domains inspect soular-inc.com` で証明書発行を確認。
-5. 切替直後の確認: 実 HTTP レスポンス / **フォーム実送信** / 証明書 / `cf-ray` の有無。
+2. **Cloudflare で Worker の Custom Domain を2つとも外す**
+   Workers & Pages → `soular-landing` → Settings → Domains & Routes →
+   `soular-inc.com` と `www.soular-inc.com` を削除。
+   **Worker スクリプト自体は消さない**（これがロールバック経路）。
+   Custom Domain の削除で、対応する proxied DNS レコードも一緒に消える。
+3. **DNS を Vercel に向ける**（DNS-only = グレー雲を推奨）
+   | 名前 | 種別 | 値 | Proxy |
+   |---|---|---|---|
+   | `@` | **A** | `76.76.21.21` | OFF（グレー） |
+   | `www` | **CNAME** | `cname.vercel-dns.com` | OFF（グレー） |
+
+   Proxied（オレンジ雲）を維持する選択もあるが、その場合 **SSL/TLS を必ず Full (strict)** に。
+   忘れるとリダイレクトループになる。コーポレートサイトなので DNS-only で十分。
+4. **証明書の発行を確認**
+   ```bash
+   vercel domains inspect soular-inc.com
+   ```
+5. **切替直後の確認**
+   - `curl -sI https://soular-inc.com/` → 200 かつ `cf-ray` が**消えている**こと（= Cloudflare を経由していない）
+   - `https://www.soular-inc.com/` が apex に寄るか、同じ内容を返すこと
+   - **フォームを実送信**して浜田さん宛に届くこと
+   - `<head>` の canonical / OG / JSON-LD
+
+**ロールバック**: Cloudflare で Worker の Custom Domain を2つ**再登録するだけ**。
+Worker は生きたままなので再デプロイも secret 再設定も不要。DNS レコードも Custom Domain の
+登録時に自動で戻る。TTL を下げてあれば数分で復旧する。
 
 **ロールバック**: Cloudflare で Worker の Custom Domain / Route を**戻すだけ**。
 Worker は生きたままなので、再デプロイも secret の再設定も不要で数分で復旧する。
