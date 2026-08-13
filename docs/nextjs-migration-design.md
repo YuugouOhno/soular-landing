@@ -43,14 +43,31 @@
 > **移行にとっては good news。** 実際に移すべきものは「1コンポーネント + 1CSS + 1API + メタデータ」だけで、
 > 依存の大半とCSSの一部は移行時にそのまま捨てられる。
 
-### 未確認（実機で要確認）
+### ⚠️ 稼働ドメインの実測結果（2026-08-13・重要な訂正）
 
-この環境からは外部ネットワークに出られず DNS を実測できなかった。**Phase 0 で必ず確認すること。**
+当初この設計書は稼働ドメインを `soular.co.jp` と想定していたが、**誤りだった。**
 
-- `soular.co.jp` の現在の DNS レコードと **TTL**
-- Cloudflare Proxied（オレンジ雲）か DNS-only（グレー雲）か
+| ドメイン | 実測 |
+|---|---|
+| **`soular-inc.com`** | **HTTP 200。これが稼働中の本番。** `server: cloudflare` / `cf-ray` あり |
+| `soular.co.jp` | **名前解決しない。JPRS whois で `No match` = 未登録** |
+| `www.soular.co.jp` | 同上 |
+
+**つまり切替対象は `soular-inc.com`。**
+
+さらに、現行本番の `index.html` は canonical / og:url / twitter:url / JSON-LD の `url` と `logo` を
+**すべて未登録の `soular.co.jp` に向けている**。検索エンジンに「正規URLは存在しないドメイン」と
+宣言している状態で、実害のある SEO バグ。移行時にどう扱うかの判断が必要（第7章）。
+
+### 未確認（Cloudflare ダッシュボードで要確認）
+
+`wrangler` の認証が切れており（`Not logged in. Your auth token has expired`）CLI から確認できなかった。
+`wrangler login` 後、または Cloudflare ダッシュボードで確認すること。
+
+- `soular-inc.com` の DNS レコードと **TTL**
+- Proxied（オレンジ雲）か DNS-only（グレー雲）か
+- **Worker とドメインの結び付き方**（Custom Domain か Route か）← 切替手順が変わるので最重要
 - `www` の有無とリダイレクト方針
-- Cloudflare Workers のルート設定（どのパターンで Worker に流れているか）
 
 ---
 
@@ -147,14 +164,30 @@ Vercel にプロジェクトを作り、**プレビューURL**（`*.vercel.app`�
 
 ### Phase 3 — 切替
 
-1. **先に** Vercel 側へドメインを追加し、証明書が発行されるのを確認する
-   （ドメイン未追加のまま DNS を向けると証明書が発行できない — 既知の落とし穴）。
-2. Cloudflare DNS を Vercel に向ける。
+> **⚠️ 「Cloudflare を止める」のではない。** Worker スクリプトはロールバック経路そのものなので、
+> 停止も削除もしない。切替時に外すのは **ドメインの紐付け（Custom Domain / Route）だけ**。
+>
+> なぜ紐付けを外す必要があるか:
+> - **Custom Domain** の場合、Cloudflare が Worker 所有の proxied DNS レコードを自動生成しており、
+>   これがある限り同じホスト名に Vercel 向けのレコードを置けない。
+> - **Route**（`soular-inc.com/*` 等）の場合、DNS が Vercel を指していても
+>   **エッジで先に Worker が横取りする**ため、そもそも Vercel に到達しない。
+
+1. **先に** Vercel 側へドメインを追加する（`vercel domains add soular-inc.com`）。
+   ドメイン未追加のまま DNS を向けると証明書が発行できない（既知の落とし穴）。
+   この時点では `misconfigured` 表示で正常。
+2. Cloudflare で **Worker の Custom Domain / Route から `soular-inc.com` を外す**。
+   Workers & Pages → 該当 Worker → Settings → Domains & Routes。**Worker 自体は消さない。**
+3. Cloudflare DNS を Vercel に向ける。
    - DNS-only（グレー雲）の場合: apex は **A `76.76.21.21`**、www は **CNAME `cname.vercel-dns.com`**
    - Proxied（オレンジ雲）を維持する場合: **SSL/TLS を必ず Full (strict)** に。
      これを忘れるとリダイレクトループになる
-3. **Cloudflare Worker は削除しない。** DNS を戻せば即座に現行へ戻せる状態を維持する。
-4. 切替直後の確認: 実 HTTP レスポンス / フォーム実送信 / 証明書 / `cf-ray` の有無。
+4. `vercel domains inspect soular-inc.com` で証明書発行を確認。
+5. 切替直後の確認: 実 HTTP レスポンス / **フォーム実送信** / 証明書 / `cf-ray` の有無。
+
+**ロールバック**: Cloudflare で Worker の Custom Domain / Route を**戻すだけ**。
+Worker は生きたままなので、再デプロイも secret の再設定も不要で数分で復旧する。
+これが「Worker を止めない」ことの意味。
 
 ### Phase 4 — 後片付け（**数日〜1週間後**）
 
@@ -276,6 +309,12 @@ soular: OTP確認完了 → 同意確定（SSOT として保存）
 
 ## 7. 判断が必要な事項
 
+0. **`soular.co.jp` をどうするか**（最優先の判断）。現行の canonical / og:url / JSON-LD が
+   すべて未登録のこのドメインを指している。選択肢は3つ:
+   - **(a) `soular-inc.com` に書き換える**（推奨）— 実態と一致させる。SEO バグが直る
+   - (b) `soular.co.jp` を取得して `soular-inc.com` からリダイレクトする — ブランド上こちらを
+     正式ドメインにしたいなら。ただし取得と設定が終わるまで canonical は壊れたまま
+   - (c) そのまま据え置き — 移行では何も変えないという原則には忠実だが、バグを温存する
 1. **移行先**: Vercel（推奨）か `@opennextjs/cloudflare`（DNS 触らない）か
 2. **`www` の扱い**: apex へリダイレクトするか、両方受けるか
 3. **Cloudflare の Proxy**: DNS-only にするか Proxied を維持するか
