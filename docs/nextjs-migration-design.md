@@ -230,6 +230,38 @@ Vercel にプロジェクトを作り、**プレビューURL**（`*.vercel.app`�
 Worker は生きたままなので再デプロイも secret 再設定も不要。DNS レコードも Custom Domain の
 登録時に自動で戻る。TTL を下げてあれば数分で復旧する。
 
+#### Phase 3 実施結果（2026-08-13・完了）
+
+| 項目 | 結果 |
+|---|---|
+| apex / www HTTPS | `HTTP/2 200` / `server: Vercel` / **`cf-ray` なし**（Cloudflare 非経由） |
+| 証明書 | Let's Encrypt `CN=soular-inc.com`。**DNS 切替から 45 秒で発行** |
+| HSTS | `max-age=63072000` |
+| canonical / og:url / JSON-LD / robots / sitemap | すべて `soular-inc.com`。旧ドメイン参照 0 件 |
+| 描画 | tile 11 件 / ticker 10 件 |
+| フォーム実送信 | `{"ok":true}`。honeypot 200（送信せず）／必須欠落 400 |
+| MX / SPF / DKIM | Google・Resend とも保持（メールへの影響なし） |
+
+**踏んだ落とし穴（記録）**
+
+- **`vercel link` で GitHub を接続すると、以降の `vercel deploy` は既定で Preview になる。**
+  最初の1回だけが Production になり、その後の「修正して再デプロイ」が本番に反映されていなかった。
+  DNS 切替直後の数分間、本番に SEO 修正前のビルドが出ていた。
+  → **`vercel deploy --prod` で明示的に昇格させること。**
+  切替前に `vercel ls` で「どのデプロイが Production か」を必ず確認する。
+- DNS 切替直後は **HTTP:80 は 200 を返すが HTTPS は TLS ハンドシェイクで落ちる**時間帯がある。
+  これは証明書発行待ちの正常な過渡状態で、異常ではない（今回は 45 秒）。
+- `vercel domains inspect` は「Intended Nameservers を ns1/ns2.vercel-dns.com にせよ」と促すが、
+  **Cloudflare Registrar はネームサーバー変更を許さない**ため従ってはいけない。A/CNAME 方式が正解。
+
+### 残作業（Phase 4 以降）
+
+- [ ] **Worker の削除**（数日〜1週間の様子見後）。Cloudflare の Worker `soular-landing` と、
+      リポジトリの `worker/` + `wrangler.jsonc`。**急がない。ロールバック経路である。**
+- [ ] `og-image.png` を `public/` に配置（1200×630）。移行前から欠落しており OG 画像が 404
+- [ ] www → apex のリダイレクト設定（現状どちらも 200。canonical は両方 apex を指すので実害は小）
+- [ ] soular-landing 専用の Resend API キーを発行（現在は aichat の Development キーを流用中）
+
 **ロールバック**: Cloudflare で Worker の Custom Domain / Route を**戻すだけ**。
 Worker は生きたままなので、再デプロイも secret の再設定も不要で数分で復旧する。
 これが「Worker を止めない」ことの意味。
