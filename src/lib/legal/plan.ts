@@ -11,7 +11,7 @@
 //   2. pnpm generate:legal-pdfs で PDF を再生成して public/legal/ に配置
 // の順で反映すること。
 
-export type ContractPlan = "3y" | "5y" | "monitor3y";
+export type ContractPlan = "3y" | "5y";
 
 export type ContractPlanTerms = {
   label: string;
@@ -29,25 +29,18 @@ export const DEFAULT_CONTRACT_PLAN: ContractPlan = "3y";
 export const CONTRACT_PLANS: Record<ContractPlan, ContractPlanTerms> = {
   // 初期費用0円は現行の重説 第1項に明記済み (確定情報)。
   "3y": { label: "3年契約プラン", years: 3, months: 36, initialFeeYen: 0, monthlyFeeYen: null },
-  // TODO(タスク015): 5年 / モニターの初期費用・月額は浜田さんの料金表を待って埋める。
+  // TODO(タスク015): 5年の初期費用・月額は浜田さんの料金表を待って埋める。
   "5y": { label: "5年契約プラン", years: 5, months: 60, initialFeeYen: null, monthlyFeeYen: null },
-  monitor3y: {
-    label: "モニター3年プラン",
-    years: 3,
-    months: 36,
-    initialFeeYen: null,
-    monthlyFeeYen: null,
-  },
 };
 
 // 画面に並べる順序。
-export const CONTRACT_PLAN_ORDER: ContractPlan[] = ["3y", "5y", "monitor3y"];
+export const CONTRACT_PLAN_ORDER: ContractPlan[] = ["3y", "5y"];
 
-// サービスごとに選べるプラン。モニタープランは HRMS のみの制度なので
-// まごころAI では出さない（実態に無い選択肢を出さない）。
+// サービスごとに選べるプラン。現時点では全サービス共通だが、
+// りぴちゃん等をここに集約するときにサービス固有のプランが出る想定で残してある。
 export const PLANS_BY_SERVICE: Record<string, ContractPlan[]> = {
-  dental: ["3y", "5y", "monitor3y"],
-  medical: ["3y", "5y", "monitor3y"],
+  dental: ["3y", "5y"],
+  medical: ["3y", "5y"],
   aichat: ["3y", "5y"],
 };
 
@@ -56,7 +49,7 @@ export function plansForService(service: string): ContractPlan[] {
 }
 
 export function isContractPlan(value: string | null | undefined): value is ContractPlan {
-  return value === "3y" || value === "5y" || value === "monitor3y";
+  return value === "3y" || value === "5y";
 }
 
 // 不正値・未指定は既定プランに倒す (URL を手で触られても壊れないように)。

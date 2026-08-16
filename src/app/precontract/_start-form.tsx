@@ -37,7 +37,7 @@ export function StartForm({ action }: { action: Action }) {
   const [state, formAction, pending] = useActionState(action, {});
   const [service, setService] = useState<string>("dental");
   const [plan, setPlan] = useState<ContractPlan>("3y");
-  // サービスによって選べるプランが違う（モニターは HRMS のみ）。
+  // サービスによって選べるプランが違う（今は共通だが将来サービス固有が出る想定）。
   // サービスを変えたとき、そのサービスに無いプランが残らないよう寄せ直す。
   const availablePlans = plansForService(service);
   const effectivePlan = availablePlans.includes(plan) ? plan : availablePlans[0];
