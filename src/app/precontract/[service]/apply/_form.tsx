@@ -41,9 +41,9 @@ const DOC_LINKS = [
 type DocKey = (typeof DOC_LINKS)[number]["key"];
 
 // 送信に必須の同意チェック (これらが全て true になるまで送信ボタンを無効化する)。
-function requiredChecks(plan: ContractPlan): string[] {
+function requiredChecks(plan: ContractPlan, service: string): string[] {
   return [
-    ...importantChecklistFor(plan).map((i) => i.key),
+    ...importantChecklistFor(plan, null, service).map((i) => i.key),
     FEE_AGREEMENT_KEY,
     "agreedImportant",
     "agreedTerms",
@@ -67,7 +67,7 @@ export function ConsentForm({
   const fees = { initialFeeYen: conditions.initialFeeYen, monthlyFeeYen: conditions.monthlyFeeYen };
   const [state, formAction, pending] = useActionState(action, INITIAL);
   const planTerms = effectivePlanTerms(plan, fees);
-  const checklist = importantChecklistFor(plan, fees);
+  const checklist = importantChecklistFor(plan, fees, service);
   const [opened, setOpened] = useState<Record<DocKey, boolean>>({
     important: false,
     terms: false,
@@ -80,7 +80,7 @@ export function ConsentForm({
 
   const markOpened = (key: DocKey) => setOpened((o) => ({ ...o, [key]: true }));
   const onCheck = (name: string, value: boolean) => setChecked((c) => ({ ...c, [name]: value }));
-  const allChecked = requiredChecks(plan).every((k) => checked[k]);
+  const allChecked = requiredChecks(plan, service).every((k) => checked[k]);
 
 
   return (

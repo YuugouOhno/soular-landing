@@ -79,7 +79,7 @@ export async function submitConsentAction(
 
   // 個別チェックを正規化（全 true で到達している前提）。料金同意も証跡に含める。
   const checklist: Record<string, boolean> = {};
-  for (const item of importantChecklistFor(plan, fees)) checklist[item.key] = true;
+  for (const item of importantChecklistFor(plan, fees, service)) checklist[item.key] = true;
   checklist[FEE_AGREEMENT_KEY] = true;
 
   const d = parsed.data;

@@ -13,6 +13,7 @@ export type ServiceOwner = "hrms" | "aichat" | "ripichan";
 export const SERVICE_OWNER: Record<LegalService, ServiceOwner> = {
   dental: "hrms",
   medical: "hrms",
+  aichat: "aichat",
 };
 
 // 接続先とシークレットは環境変数から。シークレットは**アプリごとに別のものを使う**

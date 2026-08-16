@@ -43,6 +43,18 @@ export const CONTRACT_PLANS: Record<ContractPlan, ContractPlanTerms> = {
 // 画面に並べる順序。
 export const CONTRACT_PLAN_ORDER: ContractPlan[] = ["3y", "5y", "monitor3y"];
 
+// サービスごとに選べるプラン。モニタープランは HRMS のみの制度なので
+// まごころAI では出さない（実態に無い選択肢を出さない）。
+export const PLANS_BY_SERVICE: Record<string, ContractPlan[]> = {
+  dental: ["3y", "5y", "monitor3y"],
+  medical: ["3y", "5y", "monitor3y"],
+  aichat: ["3y", "5y"],
+};
+
+export function plansForService(service: string): ContractPlan[] {
+  return PLANS_BY_SERVICE[service] ?? ["3y", "5y"];
+}
+
 export function isContractPlan(value: string | null | undefined): value is ContractPlan {
   return value === "3y" || value === "5y" || value === "monitor3y";
 }

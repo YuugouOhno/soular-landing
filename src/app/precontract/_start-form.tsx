@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { CONTRACT_PLANS, CONTRACT_PLAN_ORDER, type ContractPlan } from "@/lib/legal/plan";
+import { CONTRACT_PLANS, plansForService, type ContractPlan } from "@/lib/legal/plan";
 import { resolveServiceLabel } from "@/lib/branding";
 import type { StartState } from "./actions";
 
@@ -31,11 +31,16 @@ const lg: React.CSSProperties = { fontWeight: 700, fontSize: 14, padding: "0 8px
 const errStyle: React.CSSProperties = { color: "#a23b2a", fontSize: 12, margin: "2px 0 0" };
 
 // 今 soular から申し込めるサービス。将来 aichat / ripichan をここに足す。
-const SERVICES = ["dental", "medical"] as const;
+const SERVICES = ["dental", "medical", "aichat"] as const;
 
 export function StartForm({ action }: { action: Action }) {
   const [state, formAction, pending] = useActionState(action, {});
+  const [service, setService] = useState<string>("dental");
   const [plan, setPlan] = useState<ContractPlan>("3y");
+  // サービスによって選べるプランが違う（モニターは HRMS のみ）。
+  // サービスを変えたとき、そのサービスに無いプランが残らないよう寄せ直す。
+  const availablePlans = plansForService(service);
+  const effectivePlan = availablePlans.includes(plan) ? plan : availablePlans[0];
 
   const err = (k: string) => (state.errors?.[k] ? <p style={errStyle}>{state.errors[k]}</p> : null);
 
@@ -51,7 +56,13 @@ export function StartForm({ action }: { action: Action }) {
         <legend style={lg}>1. サービス</legend>
         <label style={{ display: "grid", gap: 6 }}>
           <span style={{ fontSize: 13 }}>お申し込みいただくサービス</span>
-          <select name="service" style={input} defaultValue="dental" required>
+          <select
+            name="service"
+            style={input}
+            value={service}
+            onChange={(e) => setService(e.target.value)}
+            required
+          >
             {SERVICES.map((s) => (
               <option key={s} value={s}>
                 {resolveServiceLabel(s)}
@@ -72,11 +83,11 @@ export function StartForm({ action }: { action: Action }) {
           <select
             name="contractPlan"
             style={input}
-            value={plan}
+            value={effectivePlan}
             onChange={(e) => setPlan(e.target.value as ContractPlan)}
             required
           >
-            {CONTRACT_PLAN_ORDER.map((k) => (
+            {availablePlans.map((k) => (
               <option key={k} value={k}>
                 {CONTRACT_PLANS[k].label}（{CONTRACT_PLANS[k].months}ヶ月）
               </option>
@@ -114,7 +125,7 @@ export function StartForm({ action }: { action: Action }) {
               required
             />
             <span style={{ fontSize: 11, color: "#6b7280" }}>
-              {CONTRACT_PLANS[plan].months}ヶ月の継続利用が前提
+              {CONTRACT_PLANS[effectivePlan].months}ヶ月の継続利用が前提
             </span>
             {err("monthlyFeeYen")}
           </label>

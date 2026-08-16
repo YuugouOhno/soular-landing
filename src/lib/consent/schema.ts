@@ -22,8 +22,26 @@ import {
 export function importantChecklistFor(
   plan: ContractPlan,
   fees?: DealFees | null,
+  service?: string,
 ): { key: string; label: string }[] {
   const terms = effectivePlanTerms(plan, fees);
+
+  // まごころAIチャットは重説の構成が HRMS と異なるため、確認項目も別に持つ。
+  // key は aichat 側 schema.ts と一致させること（受信側で必須キーを突合するため）。
+  if (service === "aichat") {
+    return [
+      {
+        key: "min_term",
+        label: `最低利用期間（${terms.years}年間）および中途解約の条件について説明を受け、理解しました`,
+      },
+      { key: "recurring", label: "月額利用料が継続的に発生することを理解しました" },
+      {
+        key: "disclaimer",
+        label: "免責事項 (AI 回答の精度・医療判断の最終責任等) について理解しました",
+      },
+    ];
+  }
+
   const initialFeeText =
     terms.initialFeeYen === null
       ? ""
