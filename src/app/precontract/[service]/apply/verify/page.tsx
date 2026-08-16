@@ -31,15 +31,15 @@ export default async function PrecontractVerifyPage({
 
   const store = await cookies();
   const sid = store.get(CONSENT_SID_COOKIE)?.value;
-  if (!isValidSubmissionId(sid)) redirect(`/precontract/${service}`);
+  if (!isValidSubmissionId(sid)) redirect(`/precontract/${service}/apply`);
 
   // 状態はサービス側の API から取る（soular は同意データを保持しない）。
   // 受け取るのはマスク済みメールと状態だけで、素のアドレスは soular に渡らない。
   const submission = await fetchConsentStatus({ service, submissionId: sid });
-  if (!submission) redirect(`/precontract/${service}`);
+  if (!submission) redirect(`/precontract/${service}/apply`);
   // URL の service と提出済みサービスが食い違う場合は正しい URL に正規化する
   // (dental で送信後に /precontract/medical/verify を開いた等)。
-  if (submission.service !== service) redirect(`/precontract/${submission.service}/verify`);
+  if (submission.service !== service) redirect(`/precontract/${submission.service}/apply/verify`);
 
   const alreadyVerified = submission.status === "verified";
 

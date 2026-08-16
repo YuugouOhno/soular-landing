@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { readConditions } from "@/lib/consent/conditions";
 import {
   isLegalService,
   resolveLegalDoc,
@@ -46,8 +47,18 @@ export default async function PrecontractLegalDocPage({
 
   const kind = doc as LegalDocKind;
   // 重説のみ契約プランで第1項が変わる (利用規約・プライバシーは不変)。
-  const plan = resolveContractPlan((await searchParams).plan);
-  const d = resolveLegalDoc(service, kind, plan);
+  // 金額は確定条件（署名付き cookie）からのみ取る。URL では変えられない。
+  // 条件が無い/期限切れなら金額なしの版を表示する（プランは URL 指定を許容）。
+  const conditions = await readConditions();
+  const plan =
+    conditions && conditions.service === service
+      ? conditions.plan
+      : resolveContractPlan((await searchParams).plan);
+  const fees =
+    conditions && conditions.service === service
+      ? { initialFeeYen: conditions.initialFeeYen, monthlyFeeYen: conditions.monthlyFeeYen }
+      : null;
+  const d = resolveLegalDoc(service, kind, plan, fees);
   const version = policyVersionsFor(service)[kind];
 
   return (

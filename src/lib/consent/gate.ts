@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 import { getOptionalEnv } from "@/lib/env";
 
@@ -47,6 +47,22 @@ export async function isGateUnlocked(): Promise<boolean> {
   const token = store.get(PRECONTRACT_GATE_COOKIE)?.value;
   if (!token) return false;
   return timingSafeEqualStr(token, computeGateToken(password));
+}
+
+/**
+ * 現在のゲート通過状態を表す短い指紋。
+ * 条件 cookie の署名対象に含めることで、**合言葉を変えたら条件 cookie も
+ * 連鎖して無効になる**（ゲート cookie が自動失効する既存の設計と揃える）。
+ * ゲート未通過なら null。
+ */
+export async function gateTokenFingerprint(): Promise<string | null> {
+  const password = getGatePassword();
+  if (!password) return null;
+  const store = await cookies();
+  const token = store.get(PRECONTRACT_GATE_COOKIE)?.value;
+  if (!token || !timingSafeEqualStr(token, computeGateToken(password))) return null;
+  // 生のトークンではなく短縮した指紋を使う（条件 cookie が漏れてもゲート値を復元させない）。
+  return createHash("sha256").update(token).digest("base64url").slice(0, 22);
 }
 
 export type GateUnlockResult = "ok" | "wrong" | "not_configured";

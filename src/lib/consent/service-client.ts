@@ -86,6 +86,13 @@ export type ConsentApplicant = {
 export type CreateConsentInput = {
   service: LegalService;
   contractPlan: string;
+  /** 案件ごとに確定した金額。重説 第1項に反映され、document_hash に効く。 */
+  fees: {
+    initialFeeYen: number;
+    monthlyFeeYen: number;
+    /** 条件を確定した時刻（unix 秒）。同意時刻との時系列を突合できるようにする。 */
+    agreedAt: number;
+  };
   applicant: ConsentApplicant;
   consent: {
     agreedTerms: boolean;

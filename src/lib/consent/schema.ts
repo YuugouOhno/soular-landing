@@ -3,12 +3,13 @@
 // (actions.ts は consentFormSchema.safeParse(raw) を呼ぶだけで済む)。
 
 import {
-  contractPlanTerms,
+  effectivePlanTerms,
   formatYen,
   isPlanFeeConfirmed,
   planFeeSummary,
   resolveContractPlan,
   type ContractPlan,
+  type DealFees,
 } from "@/lib/legal/plan";
 
 // 重要事項説明 (重説) の個別チェック項目。
@@ -20,8 +21,9 @@ import {
 // IMPORTANT_CHECKLIST は既定プランのスナップショット (既存の呼び出し互換用)。
 export function importantChecklistFor(
   plan: ContractPlan,
+  fees?: DealFees | null,
 ): { key: string; label: string }[] {
-  const terms = contractPlanTerms(plan);
+  const terms = effectivePlanTerms(plan, fees);
   const initialFeeText =
     terms.initialFeeYen === null
       ? ""
@@ -38,9 +40,9 @@ export function importantChecklistFor(
 // 2026-08-11 MTG: 全体説明への同意とは「別枠」で料金への同意を取る。
 export const FEE_AGREEMENT_KEY = "fee_agreement";
 
-export function feeAgreementLabel(plan: ContractPlan): string {
-  return isPlanFeeConfirmed(plan)
-    ? `料金について理解し、同意しました（${planFeeSummary(plan)}）`
+export function feeAgreementLabel(plan: ContractPlan, fees?: DealFees | null): string {
+  return isPlanFeeConfirmed(plan, fees)
+    ? `料金について理解し、同意しました（${planFeeSummary(plan, fees)}）`
     : "料金（初期費用・月額利用料・契約期間）について担当者から説明を受け、理解し同意しました";
 }
 

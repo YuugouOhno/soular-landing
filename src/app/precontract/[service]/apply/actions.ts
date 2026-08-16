@@ -5,17 +5,12 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getClientIp } from "@/lib/security/ip";
 import { isGateUnlocked } from "@/lib/consent/gate";
+import { clearConditions, readConditions } from "@/lib/consent/conditions";
 import { isSubmitLimited } from "@/lib/consent/rate-limit";
 import { CONSENT_SID_COOKIE, consentSidCookieOptions } from "@/lib/consent/cookie";
 import { consentFormSchema, FEE_AGREEMENT_KEY, importantChecklistFor } from "@/lib/consent/schema";
 import { createConsent } from "@/lib/consent/service-client";
-import {
-  isLegalService,
-  legalDocText,
-  policyVersionsFor,
-  resolveLegalDoc,
-  type LegalService,
-} from "@/lib/legal";
+import { legalDocText, policyVersionsFor, resolveLegalDoc } from "@/lib/legal";
 
 export type ConsentFormState = {
   formError?: string;
@@ -35,7 +30,30 @@ export async function submitConsentAction(
     };
   }
 
-  const raw = Object.fromEntries(formData.entries()) as Record<string, unknown>;
+  // 契約条件（サービス・プラン・金額）は **署名付き cookie からのみ** 読む。
+  // フォームの hidden input を信用すると、DevTools で value を書き換えるだけで
+  // 契約金額を改竄できてしまう（security-reviewer の最重要指摘）。
+  const conditions = await readConditions();
+  if (!conditions) {
+    return {
+      formError:
+        "お申し込み条件の有効期限が切れました。お手数ですが最初の画面からやり直してください。",
+    };
+  }
+  const service = conditions.service;
+  const plan = conditions.plan;
+  const fees = {
+    initialFeeYen: conditions.initialFeeYen,
+    monthlyFeeYen: conditions.monthlyFeeYen,
+  };
+
+  // 申込者情報はフォームから受け取る（条件と違い改竄されても本人が困るだけの値）。
+  // service / contractPlan は cookie 由来の値で上書きし、送信値は採用しない。
+  const raw = {
+    ...(Object.fromEntries(formData.entries()) as Record<string, unknown>),
+    service,
+    contractPlan: plan,
+  };
   const parsed = consentFormSchema.safeParse(raw);
   if (!parsed.success) {
     const errors: Record<string, string> = {};
@@ -46,9 +64,6 @@ export async function submitConsentAction(
     return { errors };
   }
 
-  const service = parsed.data.service as LegalService;
-  const plan = parsed.data.contractPlan;
-
   const h = await headers();
   const ip = getClientIp(h);
   if (isSubmitLimited(ip)) {
@@ -58,13 +73,13 @@ export async function submitConsentAction(
   // 顧客に実際に提示した重説の本文を組み立てて丸ごと送る。
   // サービス側は文面を持たず、受け取った本文を保存し、ハッシュを再計算して検証する。
   const versions = policyVersionsFor(service);
-  const importantDoc = resolveLegalDoc(service, "important", plan);
+  const importantDoc = resolveLegalDoc(service, "important", plan, fees);
   const importantText = legalDocText(versions.important, importantDoc);
   const importantHash = createHash("sha256").update(importantText, "utf8").digest("hex");
 
   // 個別チェックを正規化（全 true で到達している前提）。料金同意も証跡に含める。
   const checklist: Record<string, boolean> = {};
-  for (const item of importantChecklistFor(plan)) checklist[item.key] = true;
+  for (const item of importantChecklistFor(plan, fees)) checklist[item.key] = true;
   checklist[FEE_AGREEMENT_KEY] = true;
 
   const d = parsed.data;
@@ -90,6 +105,11 @@ export async function submitConsentAction(
       agreedImportant: true,
       selfInputConfirmed: true,
       checklist,
+    },
+    fees: {
+      initialFeeYen: conditions.initialFeeYen,
+      monthlyFeeYen: conditions.monthlyFeeYen,
+      agreedAt: conditions.issuedAt,
     },
     documents: {
       termsVersion: versions.terms,
@@ -119,6 +139,8 @@ export async function submitConsentAction(
   // soular が保持するのはこの識別子のみで、申込者の情報は保存しない。
   const store = await cookies();
   store.set(CONSENT_SID_COOKIE, result.submissionId, consentSidCookieOptions());
+  // 条件は役目を終えたので破棄する（使い終わった cookie を残さない）。
+  await clearConditions();
 
-  redirect(`/precontract/${service}/verify`);
+  redirect(`/precontract/${service}/apply/verify`);
 }

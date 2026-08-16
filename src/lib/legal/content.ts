@@ -1,6 +1,6 @@
 import type { LegalDoc, LegalSection } from "./types";
 import type { LegalService } from "./policy";
-import { contractPlanTerms, formatYen, type ContractPlan } from "./plan";
+import { effectivePlanTerms, formatYen, type ContractPlan, type DealFees } from "./plan";
 
 // 確定版の文面（利用規約・プライバシーポリシー・重要事項説明書）をサービス別に保持する。
 // - 利用規約: 全17条はデンタル/メディで同一。冒頭リード文のみブランド/業種で差し替え。
@@ -214,8 +214,8 @@ function buildTerms(service: LegalService): LegalDoc {
 // 重要事項説明書 第1項の本文を契約プランから組み立てる。
 // 既定の 3年契約プラン (初期費用0円・月額未確定) では、従来ベタ書きだった文面と
 // 1 文字も変わらない出力になるよう組んである (document_hash と配置済み PDF の互換維持)。
-function buildImportantItem1(plan: ContractPlan): LegalSection {
-  const terms = contractPlanTerms(plan);
+function buildImportantItem1(plan: ContractPlan, fees?: DealFees | null): LegalSection {
+  const terms = effectivePlanTerms(plan, fees);
 
   // 初期費用が未確定のプランでは、この修飾句ごと落とす。
   const initialFeeClause =
@@ -246,13 +246,13 @@ function buildImportantItem1(plan: ContractPlan): LegalSection {
   return { heading: `第1項 【${terms.label}の適用条件と中途解約について】`, body };
 }
 
-function buildImportant(service: LegalService, plan: ContractPlan): LegalDoc {
+function buildImportant(service: LegalService, plan: ContractPlan, fees?: DealFees | null): LegalDoc {
   return {
     kind: "important",
     title: `「${BRAND_NAME[service]}」重要事項説明書`,
     intro: IMPORTANT_INTRO[service],
     sections: [
-      buildImportantItem1(plan),
+      buildImportantItem1(plan, fees),
       {
         heading: "第2項 【本システムの役割と、組織改善に向けた免責事項】",
         body: [
@@ -456,10 +456,11 @@ function buildPrivacy(service: LegalService): LegalDoc {
 export function legalDocsFor(
   service: LegalService,
   plan: ContractPlan,
+  fees?: DealFees | null,
 ): Record<LegalDoc["kind"], LegalDoc> {
   return {
     terms: buildTerms(service),
     privacy: buildPrivacy(service),
-    important: buildImportant(service, plan),
+    important: buildImportant(service, plan, fees),
   };
 }

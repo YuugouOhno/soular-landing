@@ -1,12 +1,14 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import Link from "next/link";
 import {
   FEE_AGREEMENT_KEY,
   feeAgreementLabel,
   importantChecklistFor,
 } from "@/lib/consent/schema";
-import { contractPlanTerms, planFeeSummary, type ContractPlan } from "@/lib/legal/plan";
+import { effectivePlanTerms, planFeeSummary, type ContractPlan } from "@/lib/legal/plan";
+import type { ApplyConditions } from "@/lib/consent/conditions";
 import type { ConsentFormState } from "./actions";
 
 type Action = (prev: ConsentFormState, formData: FormData) => Promise<ConsentFormState>;
@@ -52,16 +54,20 @@ function requiredChecks(plan: ContractPlan): string[] {
 
 export function ConsentForm({
   service,
-  plan,
+  conditions,
   action,
 }: {
   service: string;
-  plan: ContractPlan;
+  conditions: ApplyConditions;
   action: Action;
 }) {
+  // 条件はスタート画面で確定済み。ここでは変更できない。
+  // 送信時にサーバーが cookie から読み直すため、この値は表示専用。
+  const plan = conditions.plan;
+  const fees = { initialFeeYen: conditions.initialFeeYen, monthlyFeeYen: conditions.monthlyFeeYen };
   const [state, formAction, pending] = useActionState(action, INITIAL);
-  const planTerms = contractPlanTerms(plan);
-  const checklist = importantChecklistFor(plan);
+  const planTerms = effectivePlanTerms(plan, fees);
+  const checklist = importantChecklistFor(plan, fees);
   const [opened, setOpened] = useState<Record<DocKey, boolean>>({
     important: false,
     terms: false,
@@ -76,11 +82,12 @@ export function ConsentForm({
   const onCheck = (name: string, value: boolean) => setChecked((c) => ({ ...c, [name]: value }));
   const allChecked = requiredChecks(plan).every((k) => checked[k]);
 
+
   return (
     <form action={formAction} style={{ display: "grid", gap: 22, marginTop: 20 }}>
       <input type="hidden" name="service" value={service} />
-      {/* ゲート画面で選択された契約プラン。重説 第1項の文面と document_hash に効く。 */}
-      <input type="hidden" name="contractPlan" value={plan} />
+      {/* 契約条件は hidden input で送らない。サーバーが署名付き cookie から読む
+          (hidden を信用すると DevTools で金額を書き換えられる)。 */}
       {state.formError ? <p style={boxError}>{state.formError}</p> : null}
 
       {/* A. 申込者情報 */}
@@ -98,10 +105,13 @@ export function ConsentForm({
           }}
         >
           <strong>ご契約プラン：{planTerms.label}</strong>
-          <span style={{ display: "block", color: "#4b5563" }}>{planFeeSummary(plan)}</span>
-          <span style={{ display: "block", color: "#6b7280", fontSize: 12, marginTop: 4 }}>
-            プランを変更する場合は、担当者にご連絡ください。
-          </span>
+          <span style={{ display: "block", color: "#4b5563" }}>{planFeeSummary(plan, fees)}</span>
+          <Link
+            href="/precontract"
+            style={{ display: "inline-block", marginTop: 6, fontSize: 12, color: "#2563eb" }}
+          >
+            条件を変更する（最初の画面に戻ります）
+          </Link>
         </div>
         <div style={grid2}>
           <Field label="医院・法人名" required error={err("clinicName")}>
@@ -180,6 +190,7 @@ export function ConsentForm({
       {/* C. 重説の個別同意 */}
       <fieldset style={fs}>
         <legend style={lg}>3. 重要事項説明の確認</legend>
+        {/* プランを変えたら非制御チェックボックスを作り直し、見た目のチェックも確実に外す */}
         <div style={{ display: "grid", gap: 10 }}>
           {checklist.map((item) => (
             <Check key={item.key} name={item.key} disabled={!opened.important} onChange={onCheck} error={err(item.key)}>
@@ -207,7 +218,7 @@ export function ConsentForm({
             onChange={onCheck}
             error={err(FEE_AGREEMENT_KEY)}
           >
-            <strong>{feeAgreementLabel(plan)}</strong>
+            <strong>{feeAgreementLabel(plan, fees)}</strong>
           </Check>
         </div>
       </fieldset>

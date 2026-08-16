@@ -56,18 +56,31 @@ export function contractPlanTerms(plan: ContractPlan): ContractPlanTerms {
   return CONTRACT_PLANS[plan];
 }
 
+/** 案件ごとに営業が入力する金額。スタート画面で確定し、重説 第1項に反映される。 */
+export type DealFees = { initialFeeYen: number; monthlyFeeYen: number };
+
+/**
+ * プラン定義に案件別の金額を重ねた実効条件を返す。
+ * 金額が渡されなければプラン定義の既定値（多くは未確定=null）のまま。
+ */
+export function effectivePlanTerms(plan: ContractPlan, fees?: DealFees | null): ContractPlanTerms {
+  const base = CONTRACT_PLANS[plan];
+  if (!fees) return base;
+  return { ...base, initialFeeYen: fees.initialFeeYen, monthlyFeeYen: fees.monthlyFeeYen };
+}
+
 export function formatYen(amount: number): string {
   return `${amount.toLocaleString("ja-JP")}円`;
 }
 
 // 料金が確定しているプランかどうか。false の間は重説に金額を書かない。
-export function isPlanFeeConfirmed(plan: ContractPlan): boolean {
-  return CONTRACT_PLANS[plan].monthlyFeeYen !== null;
+export function isPlanFeeConfirmed(plan: ContractPlan, fees?: DealFees | null): boolean {
+  return effectivePlanTerms(plan, fees).monthlyFeeYen !== null;
 }
 
 // 同意チェックや控えメールに出す料金サマリー。未確定時は担当者案内に委ねる。
-export function planFeeSummary(plan: ContractPlan): string {
-  const terms = CONTRACT_PLANS[plan];
+export function planFeeSummary(plan: ContractPlan, fees?: DealFees | null): string {
+  const terms = effectivePlanTerms(plan, fees);
   if (terms.monthlyFeeYen === null) {
     return `${terms.label}（${terms.months}ヶ月）／料金は担当者よりご案内した内容`;
   }
