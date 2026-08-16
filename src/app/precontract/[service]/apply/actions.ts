@@ -61,7 +61,10 @@ export async function submitConsentAction(
       const key = String(issue.path[0] ?? "form");
       if (!errors[key]) errors[key] = issue.message;
     }
-    return { errors };
+    // フィールド単位のエラーは、そのフィールドが画面に出ていて初めて見える。
+    // 画面に無いキー（service 等）だけが立つと、**押しても何も起きない**ように見える。
+    // 必ず全体エラーも添えて、無言で失敗しないようにする。
+    return { errors, formError: "入力内容をご確認ください。未入力または未チェックの項目があります。" };
   }
 
   const h = await headers();

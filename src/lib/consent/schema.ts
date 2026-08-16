@@ -11,6 +11,7 @@ import {
   type ContractPlan,
   type DealFees,
 } from "@/lib/legal/plan";
+import { isLegalService, type LegalService } from "@/lib/legal/policy";
 
 // 重要事項説明 (重説) の個別チェック項目。
 // 重要な論点を個別に同意取得することで「各項目を説明・同意した」と立証でき、
@@ -88,7 +89,7 @@ export const IMPORTANT_CHECKLIST = importantChecklistFor("3y");
 export type ChecklistKey = (typeof IMPORTANT_CHECKLIST_TAIL)[number]["key"] | "term_penalty";
 
 export type ConsentFormInput = {
-  service: "dental" | "medical";
+  service: LegalService;
   contractPlan: ContractPlan;
   clinicName: string;
   applicantName: string;
@@ -100,10 +101,8 @@ export type ConsentFormInput = {
   salesRep: string;
   servicePlan: string;
   scheduledContractDate: string;
-  term_penalty: boolean;
-  disclaimer: boolean;
-  late_fee: boolean;
-  data_backup: boolean;
+  /** 重説の個別チェック。項目はサービスと契約プランで変わるのでキー固定にしない。 */
+  checklist: Record<string, boolean>;
   fee_agreement: boolean;
   agreedImportant: boolean;
   agreedTerms: boolean;
@@ -147,8 +146,12 @@ export const consentFormSchema = {
       return ok;
     };
 
+    // service / contractPlan は actions.ts が署名付き cookie の値で上書きしてから渡す。
+    // ⚠️ ここの許可リストは必ず LegalService と揃えること。ここだけ古いと、
+    //    画面に無いフィールド名（service）のエラーになって **何も表示されないまま**
+    //    送信が失敗する（2026-08-16 aichat 追加時に実際に踏んだ）。
     const serviceRaw = str(raw, "service");
-    const service = serviceRaw === "dental" || serviceRaw === "medical" ? serviceRaw : null;
+    const service = isLegalService(serviceRaw) ? serviceRaw : null;
     if (!service) issues.push({ path: ["service"], message: "不正なリクエストです" });
 
     // 契約プランは不正値・未指定を既定プランに倒す (URL 由来のため落とさない)。
@@ -180,10 +183,15 @@ export const consentFormSchema = {
     if (!DATE_RE.test(scheduledContractDate))
       issues.push({ path: ["scheduledContractDate"], message: "契約予定日を選択してください" });
 
-    const term_penalty = check("term_penalty");
-    const disclaimer = check("disclaimer");
-    const late_fee = check("late_fee");
-    const data_backup = check("data_backup");
+    // 個別チェックは画面に出している項目とまったく同じ集合を必須にする。
+    // ハードコードすると、サービスごとに項目が違うときに
+    // 「画面に無い項目が未チェット扱い」になって黙って弾かれる。
+    const checklist: Record<string, boolean> = {};
+    if (service) {
+      for (const item of importantChecklistFor(contractPlan, null, service)) {
+        checklist[item.key] = check(item.key);
+      }
+    }
     const fee_agreement = check(FEE_AGREEMENT_KEY);
     const agreedImportant = check("agreedImportant");
     const agreedTerms = check("agreedTerms");
@@ -215,10 +223,7 @@ export const consentFormSchema = {
         salesRep,
         servicePlan,
         scheduledContractDate,
-        term_penalty,
-        disclaimer,
-        late_fee,
-        data_backup,
+        checklist,
         fee_agreement,
         agreedImportant,
         agreedTerms,

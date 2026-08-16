@@ -1,10 +1,15 @@
 // 契約前に提示する法務文書のバージョン管理。
-// デンタルマネージャー / メディマネージャー の 2 サービス × 文書 (利用規約・
-// プライバシー・重要事項説明書) ごとに版を持つ。文面を改定したら該当の版を更新する。
+// サービス × 文書 (利用規約・プライバシー・重要事項説明書) ごとに版を持つ。
+// 文面を改定したら該当の版を更新する。
 // consent_submissions.{terms,privacy,important}_version に保存され、後から
 // 「当時のどの版に同意したか」を立証できる。
 
-export type LegalService = "dental" | "medical" | "aichat";
+// 申込を受け付けるサービスの正本。**増やすときはここだけを直す。**
+// 許可リストを他所に複製すると、片方だけ古くなって「画面には出るのに
+// 送信すると無言で弾かれる」状態になる（2026-08-16 に aichat で実際に起きた）。
+export const LEGAL_SERVICES = ["dental", "medical", "aichat"] as const;
+
+export type LegalService = (typeof LEGAL_SERVICES)[number];
 
 export type DocVersions = { terms: string; privacy: string; important: string };
 
@@ -17,7 +22,7 @@ export const POLICY_VERSIONS: Record<LegalService, DocVersions> = {
 };
 
 export function isLegalService(value: string | null | undefined): value is LegalService {
-  return value === "dental" || value === "medical" || value === "aichat";
+  return LEGAL_SERVICES.includes(value as LegalService);
 }
 
 export function policyVersionsFor(service: LegalService): DocVersions {
