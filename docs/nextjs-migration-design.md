@@ -257,25 +257,39 @@ Worker は生きたままなので再デプロイも secret 再設定も不要�
 ### 残作業（Phase 4 以降）
 
 - [x] **リポジトリ側の Worker 撤去**（2026-08-25）。`worker/` + `wrangler.jsonc` を削除。
-      Cloudflare 上の Worker `soular-landing` は**残してある**（ロールバック経路）。
-- [ ] **Cloudflare の Workers Builds 連携を切る**（要ダッシュボード操作）。
+- [x] **Cloudflare の Workers Builds 連携を切る**（2026-08-25・ダッシュボードで実施）。
       連携が生きている間は main の全コミットに `Workers Builds: soular-landing` の
-      赤いチェックが付き続ける（`wrangler.jsonc` を消した後はビルド設定が見つからず失敗する）。
-      Workers & Pages → `soular-landing` → Settings → Build → GitHub 連携を Disconnect。
-      API では不可（`workers_builds` 権限を持つトークンが必要で、その発行自体がダッシュボード操作）。
+      赤いチェックが付き続けていた。API では不可だった（`workers_builds` 権限を持つ
+      トークンが必要で、その発行自体がダッシュボード操作）。
+- [x] **Cloudflare 上の Worker `soular-landing` を削除**（2026-08-25）。
+      **ロールバック経路として残す方針は取り下げた。** 撤去時点で実測したところ、
+      残置には次の実害があった。
+
+      | 項目 | 実測値 |
+      |---|---|
+      | Custom Domain | **0 件**（切替時に外れており、経路上にいない） |
+      | Worker Routes | なし |
+      | `workers.dev` サブドメイン | **enabled: true**（`soular-landing.yuugou-purple.workers.dev` が公開） |
+      | 保持していた secret | `RESEND_API_KEY` |
+
+      つまり「誰も見ていない公開 URL に、本番と別ビルドのサイト複製が晒され、
+      そこから `noreply@soular-inc.com` 名義でメールを送れる」状態だった。
+      加えて Custom Domain が外れている以上、復旧は「DNS を戻すだけ」ではなく
+      紐付けの再作成が要るため、**ロールバック経路としての価値も既に失われていた**。
+      Worker のソースは git 履歴（`24db066^`）に残っており、必要なら復元できる。
 - [ ] `og-image.png` を `public/` に配置（1200×630）。移行前から欠落しており OG 画像が 404
 - [ ] www → apex のリダイレクト設定（現状どちらも 200。canonical は両方 apex を指すので実害は小）
 - [ ] soular-landing 専用の Resend API キーを発行（現在は aichat の Development キーを流用中）
 
-**ロールバック**: Cloudflare で Worker の Custom Domain / Route を**戻すだけ**。
-Worker は生きたままなので、再デプロイも secret の再設定も不要で数分で復旧する。
-これが「Worker を止めない」ことの意味。
+**ロールバック**: ~~Cloudflare で Worker の Custom Domain / Route を戻すだけ~~
+→ **この経路は 2026-08-25 に閉じた**（上記のとおり Worker ごと削除）。
+現在のロールバックは Vercel のデプロイを前のものに戻す操作になる。
 
 ### Phase 4 — 後片付け（**数日〜1週間後**）→ 2026-08-25 実施済み
 
 問題が出ないことを確認してから、`wrangler.jsonc` と `worker/` を削除する。急がない。
 → 切替から 12 日、本番が Vercel で安定していることを確認して削除した。
-Cloudflare 上の Worker は残してあるので、ロールバック経路は生きている。
+同日、Cloudflare 上の Worker も削除して Cloudflare からは完全に離れた。
 
 ### ロールバック手順
 
