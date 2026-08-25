@@ -256,8 +256,13 @@ Worker は生きたままなので再デプロイも secret 再設定も不要�
 
 ### 残作業（Phase 4 以降）
 
-- [ ] **Worker の削除**（数日〜1週間の様子見後）。Cloudflare の Worker `soular-landing` と、
-      リポジトリの `worker/` + `wrangler.jsonc`。**急がない。ロールバック経路である。**
+- [x] **リポジトリ側の Worker 撤去**（2026-08-25）。`worker/` + `wrangler.jsonc` を削除。
+      Cloudflare 上の Worker `soular-landing` は**残してある**（ロールバック経路）。
+- [ ] **Cloudflare の Workers Builds 連携を切る**（要ダッシュボード操作）。
+      連携が生きている間は main の全コミットに `Workers Builds: soular-landing` の
+      赤いチェックが付き続ける（`wrangler.jsonc` を消した後はビルド設定が見つからず失敗する）。
+      Workers & Pages → `soular-landing` → Settings → Build → GitHub 連携を Disconnect。
+      API では不可（`workers_builds` 権限を持つトークンが必要で、その発行自体がダッシュボード操作）。
 - [ ] `og-image.png` を `public/` に配置（1200×630）。移行前から欠落しており OG 画像が 404
 - [ ] www → apex のリダイレクト設定（現状どちらも 200。canonical は両方 apex を指すので実害は小）
 - [ ] soular-landing 専用の Resend API キーを発行（現在は aichat の Development キーを流用中）
@@ -266,9 +271,11 @@ Worker は生きたままなので再デプロイも secret 再設定も不要�
 Worker は生きたままなので、再デプロイも secret の再設定も不要で数分で復旧する。
 これが「Worker を止めない」ことの意味。
 
-### Phase 4 — 後片付け（**数日〜1週間後**）
+### Phase 4 — 後片付け（**数日〜1週間後**）→ 2026-08-25 実施済み
 
 問題が出ないことを確認してから、`wrangler.jsonc` と `worker/` を削除する。急がない。
+→ 切替から 12 日、本番が Vercel で安定していることを確認して削除した。
+Cloudflare 上の Worker は残してあるので、ロールバック経路は生きている。
 
 ### ロールバック手順
 
