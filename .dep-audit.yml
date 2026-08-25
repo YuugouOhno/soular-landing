@@ -56,7 +56,8 @@ verify:
   timeout: 900
 
 pr:
-  base: main
+  # 依存更新 PR の宛先。development を経由させるため production ではない。
+  base: development
   branch_prefix: chore/deps
   # 脆弱性修正と通常更新で PR を分ける（既定 true）
   split_security: true
