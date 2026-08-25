@@ -5,7 +5,10 @@ name: verify
 on:
   pull_request:
   push:
-    branches: [main]
+    # development への push でも回すこと。昇格（development → main）の判定は
+    # 「development の CI が緑か」で行うため、ここに development が無いと
+    # 実行履歴が生まれず、永久に昇格できなくなる。
+    branches: [main, development]
   workflow_dispatch:
 
 concurrency:
