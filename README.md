@@ -2,7 +2,8 @@
 
 株式会社soular のコーポレートサイト（https://soular-inc.com/）。
 
-Next.js (App Router) + TypeScript。**Vite SPA + Cloudflare Workers からの移行中**で、
+Next.js (App Router) + TypeScript。ホスティングは Vercel。
+**Vite SPA + Cloudflare Workers からの移行は完了済み**で、
 移行の設計と手順は [`docs/nextjs-migration-design.md`](docs/nextjs-migration-design.md) にある。
 
 ## 開発
@@ -36,9 +37,9 @@ src/
 状態を持つのは `Nav`（ドロワー）/ `Topics`（スライダー）/ `ContactForm` / `ObfuscatedMail` と、
 ページ全体の演出を担う `LandingRoot` のみ。残りは Server Component。
 
-## 移行中の注意
+## 移行後の注意
 
-- `worker/` と `wrangler.jsonc` は**旧 Cloudflare Worker 構成**。ロールバック用に
-  移行完了（設計書の Phase 4）まで残してある。lint・tsc の対象からは外している。
+- 旧 Cloudflare Worker 構成（`worker/` と `wrangler.jsonc`）は撤去済み。
+  必要になったら `git log -- worker wrangler.jsonc` から復元できる。
 - 見た目は移行前と 1px も変えない方針。`globals.css` は旧実装の CSS をそのまま移設したもので、
-  整形・最適化は移行完了後に別途行う。
+  整形・最適化は別途行う。
