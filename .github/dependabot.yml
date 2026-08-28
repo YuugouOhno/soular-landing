@@ -7,8 +7,16 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
+    # 依存更新は development で検証してから main へ昇格させる。既定（main 宛て）だと
+    # main が先に進み、昇格 PR が「差がある」で止まる。
+    target-branch: "development"
     schedule:
       interval: "weekly"
+      day: "monday"
+      # 時刻を書かないと GitHub が勝手に決める。dep-audit（毎日 9:30 JST）の
+      # 直前に置き、PR が 30 分以内に捌かれる状態にする。
+      time: "09:00"
+      timezone: "Asia/Tokyo"
     open-pull-requests-limit: 5
     groups:
       # 個別 PR が乱立しないよう、非破壊的な更新はまとめる
@@ -18,6 +26,14 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
+    # 依存更新は development で検証してから main へ昇格させる。既定（main 宛て）だと
+    # main が先に進み、昇格 PR が「差がある」で止まる。
+    target-branch: "development"
     schedule:
       interval: "monthly"
+      day: "monday"
+      # 時刻を書かないと GitHub が勝手に決める。dep-audit（毎日 9:30 JST）の
+      # 直前に置き、PR が 30 分以内に捌かれる状態にする。
+      time: "09:00"
+      timezone: "Asia/Tokyo"
     labels: ["dependencies"]
