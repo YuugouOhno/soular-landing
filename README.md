@@ -20,6 +20,23 @@ npm run lint       # ESLint
 npm run typecheck  # tsc --noEmit
 ```
 
+## テスト
+
+```bash
+npm test                 # vitest（src/**/__tests__）
+npx playwright install chromium   # 初回のみ
+npm run test:e2e         # next build → next start + モック受信側に Playwright（e2e/local）
+npm run test:synthetic   # 本番 https://soular-inc.com への読み取り専用チェック（e2e/synthetic）
+```
+
+- E2E は **本物のメールを送らない**（RESEND_API_KEY 空で起動し、有効な問い合わせはサーバーへ送らない）。
+  事前確認の中継先は `e2e/support/mock-service.mjs`（HMAC 署名を検証するモック）。
+- synthetic は本番に対して GET と「必ず 400 になる POST」しかしない。正規送信を足さないこと。
+  CI では `synthetic.yml`（毎日 + 手動）で動く。
+- ビジュアル回帰（`e2e/local/visual.spec.ts`）の基準画像は CI(Linux) 用のみで、macOS では skip される。
+  見た目を意図的に変えたら `gh workflow run verify.yml --ref <branch> -f update_snapshots=true` →
+  artifact `visual-snapshots` を `e2e/local/visual.spec.ts-snapshots/` に置いてコミットする。
+
 ## 構成
 
 ```
