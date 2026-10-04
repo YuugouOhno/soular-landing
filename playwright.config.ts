@@ -51,6 +51,7 @@ export default defineConfig({
         // 問い合わせメールを絶対に送らない。
         RESEND_API_KEY: "",
         RESEND_FROM_EMAIL: "",
+        RESEND_FROM_NAME: "",
         // next start は NODE_ENV=production なので合言葉の開発用フォールバックは効かない。
         // 開発時と同じ "soular" を明示する。
         PRECONTRACT_ACCESS_PASSWORD: "soular",

@@ -15,6 +15,10 @@ const LEGAL = (["dental", "medical", "aichat"] as const).flatMap((service) =>
 test("トップページ: 200・タイトル・主要セクション・まごころAI ウィジェット読込", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  // ウィジェット本体の取得が実際に成功したかを見る（script 要素の有無だけでは偽陽性になる）。
+  const widget = page.waitForResponse((r) => r.url().startsWith("https://magokoro-ai.com/magokoro-ai.js"), {
+    timeout: 20_000,
+  });
   // load は外部ウィジェット・フォント待ちで揺れるので DOM 構築完了で判定する。
   const res = await page.goto("/", { waitUntil: "domcontentloaded" });
   expect(res?.status()).toBe(200);
@@ -22,7 +26,10 @@ test("トップページ: 200・タイトル・主要セクション・まごこ
   await expect(page.locator("header.hero h1")).toBeVisible();
   await expect(page.locator("#company")).toContainText("soular");
   await expect(page.locator("form.cf")).toBeVisible();
-  await expect(page.locator('script[src*="magokoro-ai.com/magokoro-ai.js"]')).toHaveCount(1);
+  const widgetRes = await widget;
+  expect(widgetRes.status(), "まごころAI ウィジェットの取得").toBe(200);
+  // 初期化時の例外も拾えるよう、ネットワークが落ち着くまで待ってから判定する。
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
   expect(errors, "未捕捉の例外").toEqual([]);
 });
 

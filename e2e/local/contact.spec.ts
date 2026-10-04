@@ -6,7 +6,11 @@ import { test, expect } from "./fixtures";
 //   - 成功/失敗の表示確認はブラウザ側で /api/contact をモックして行う
 
 // レート制限（IP 毎 10分5回）に他テストが巻き込まれないよう、テストごとに別 IP を名乗る。
-const uniqueIp = (tag: string) => ({ "x-forwarded-for": `203.0.113.${tag}` });
+// カウントはサーバーのメモリに残るため、リトライ時も別 IP になるよう retry 番号を混ぜる。
+// 前提: next start 直結（cf-connecting-ip / x-real-ip を付けるプロキシを挟まない）。
+const uniqueIp = (tag: string) => ({
+  "x-forwarded-for": `203.0.${113 + test.info().retry}.${tag}`,
+});
 
 test.describe("クライアント側の検証", () => {
   test("必須項目が空だと送信されない", async ({ page }) => {

@@ -30,6 +30,12 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Validate target URL
+        env:
+          SYNTHETIC_BASE_URL: ${{ inputs.base_url || 'https://soular-inc.com' }}
+        # 任意ホストへ POST を撃てないよう、本番か Vercel の preview に限定する。
+        run: |
+          [[ "$SYNTHETIC_BASE_URL" =~ ^https://(soular-inc\.com|[a-z0-9-]+\.vercel\.app)$ ]] || { echo "::error::許可されていない URL"; exit 1; }
       - run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
