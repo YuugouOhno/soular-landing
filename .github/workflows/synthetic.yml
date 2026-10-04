@@ -1,0 +1,44 @@
+# 本番（https://soular-inc.com）の synthetic チェック。読み取り専用。
+# 問い合わせ・事前確認の正規送信は一切しない（e2e/synthetic/production.spec.ts 冒頭参照）。
+# schedule はデフォルトブランチ（main）にこのファイルが載ってから有効になる。
+name: synthetic
+
+on:
+  schedule:
+    - cron: '17 0 * * *' # 毎日 09:17 JST
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: '対象 URL（既定は本番）'
+        required: false
+        default: 'https://soular-inc.com'
+
+concurrency:
+  group: synthetic
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Validate target URL
+        env:
+          SYNTHETIC_BASE_URL: ${{ inputs.base_url || 'https://soular-inc.com' }}
+        # 任意ホストへ POST を撃てないよう、本番か Vercel の preview に限定する。
+        run: |
+          [[ "$SYNTHETIC_BASE_URL" =~ ^https://(soular-inc\.com|[a-z0-9-]+\.vercel\.app)$ ]] || { echo "::error::許可されていない URL"; exit 1; }
+      - run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - run: npm run test:synthetic
+        env:
+          SYNTHETIC_BASE_URL: ${{ inputs.base_url || 'https://soular-inc.com' }}

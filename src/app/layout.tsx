@@ -10,7 +10,9 @@ import "./globals.css";
 // 存在しないURLを正規URLとして宣言している状態だったため、稼働実体である
 // soular-inc.com に揃えた（2026-08-13 判断）。
 //
-// ⚠️ og-image.png は public/ に存在しない（移行前から 404）。OG 画像は別途用意が必要。
+// og-image.png は移行前から 404 だったため、2026-10-04 にロゴ（public/logo.png）を
+// 1200x630 の白背景に中央配置しただけの暫定版を public/ に置いた。専用デザインに差し替える場合も
+// ファイル名とサイズ（1200x630）は保つこと。E2E（e2e/local/pages.spec.ts）と synthetic が実在を検査する。
 
 const SITE_URL = "https://soular-inc.com/";
 const DESCRIPTION =
