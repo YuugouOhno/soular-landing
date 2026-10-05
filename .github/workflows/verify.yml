@@ -10,6 +10,11 @@ on:
     # 実行履歴が生まれず、永久に昇格できなくなる。
     branches: [main, development]
   workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'ビジュアル回帰の基準画像を再生成して artifact に出す（コミットは手動）'
+        type: boolean
+        default: false
 
 concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
@@ -30,4 +35,55 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm test
       - run: npm run build
+
+  # 実挙動テスト: next build && next start に Playwright を当てる（e2e/local）。
+  # 本物のメール・本物の HRMS/aichat には触れない（playwright.config.ts 冒頭参照）。
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Playwright browsers
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Playwright system deps
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - run: npm run build
+      - run: npx playwright test
+        if: ${{ !inputs.update_snapshots }}
+      # 基準画像は CI と同じ環境でしか作れない（フォント描画が OS で違う）。
+      # gh workflow run verify.yml --ref <branch> -f update_snapshots=true → artifact を
+      # e2e/local/visual.spec.ts-snapshots/ に展開してコミットする。
+      - name: Update visual snapshots
+        if: ${{ inputs.update_snapshots }}
+        run: npx playwright test visual --update-snapshots=all
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.update_snapshots }}
+        with:
+          name: visual-snapshots
+          path: e2e/local/visual.spec.ts-snapshots/
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

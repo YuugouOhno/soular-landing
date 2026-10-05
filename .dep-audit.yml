@@ -51,7 +51,7 @@ ignore: []
 # typecheck / lint / build / test を自動検出する。
 verify:
   install: "npm install"
-  steps: ["npm run lint", "npm run build"]
+  steps: ["npm run lint", "npm test", "npm run build"]
   # 1 ステップあたりの上限（秒）。重いビルドがあるなら伸ばす。
   timeout: 900
 
