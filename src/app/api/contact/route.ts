@@ -11,22 +11,13 @@ import {
   str,
   subjectSafe,
 } from "@/lib/contact";
+import { getClientIp } from "@/lib/security/ip";
 
 // メモリ上のレート制限を持つため、静的化・キャッシュはさせない。
 export const dynamic = "force-dynamic";
 
 function json(data: unknown, status = 200) {
   return NextResponse.json(data, { status });
-}
-
-function getClientIp(request: Request): string {
-  const h = request.headers;
-  return (
-    h.get("cf-connecting-ip") ||
-    h.get("x-real-ip") ||
-    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    "unknown"
-  );
 }
 
 export async function POST(request: Request) {
@@ -42,7 +33,10 @@ export async function POST(request: Request) {
   const body = raw as Record<string, unknown>;
 
   // レート制限を honeypot 分岐より先に適用し、単純 bot の連投コストも抑える。
-  const ip = getClientIp(request);
+  // Cloudflare はプロキシせず Vercel 直で受けているため、cf-connecting-ip は
+  // クライアントが自由に送れる（毎回変えればレート制限を回避してメールを送らせ続けられた）。
+  // Vercel のエッジが上書きする x-forwarded-for を使う。
+  const ip = getClientIp(request.headers);
   if (ip !== "unknown" && isRateLimited(ip, Date.now())) {
     return json({ error: "too many requests" }, 429);
   }
